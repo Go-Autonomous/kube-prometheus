@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app.kubernetes.io/component: grafana
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/part-of: kube-prometheus
+    app.kubernetes.io/version: 8.5.5
+  name: grafana-config
+  namespace: monitoring
+stringData:
+  grafana.ini: |
+    [server]
+    domain = https://grafana.sandbox.goautonomous.ai/
+    root_url = https://grafana.sandbox.goautonomous.ai/
+
+    [date_formats]
+    default_timezone = UTC
+
+    [auth.google]
+    enabled = true
+    client_id = [REDACTED]
+    client_secret = [REDACTED]
+    scopes = https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email
+    auth_url = https://accounts.google.com/o/oauth2/auth
+    token_url = https://accounts.google.com/o/oauth2/token
+    allowed_domains = goautonomous.io goautonomous.ai
+    allow_sign_up = true
+type: Opaque
