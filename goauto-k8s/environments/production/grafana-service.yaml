@@ -9,7 +9,7 @@ metadata:
   annotations:
     networking.gke.io/load-balancer-type: "Internal"
     cloud.google.com/backend-config: '{"ports": {"3000":"grafana-backend"}}'
-    external-dns.alpha.kubernetes.io/hostname: grafana.sandbox.goautonomous.ai.
+    external-dns.alpha.kubernetes.io/hostname: grafana.prod.goautonomous.ai.
   name: grafana
   namespace: monitoring
 spec:

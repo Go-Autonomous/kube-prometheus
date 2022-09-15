@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - managed-cert.yaml
+  - public-ingress.yaml
+  - backend-config.yaml
+  # - ../../../manifests/grafana-service.yaml
+  - grafana-service.yaml
+  - grafana-config.yaml
+  - kserve-monitor.yaml
+  - kserve-monitor-clusterrole.yaml
+  - kserve-monitor-clusterrolebinding.yaml
