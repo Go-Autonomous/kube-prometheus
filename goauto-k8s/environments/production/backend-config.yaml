@@ -1,0 +1,14 @@
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: grafana-backend
+  namespace: monitoring
+spec:
+  timeoutSec: 720
+  connectionDraining:
+    drainingTimeoutSec: 360
+  healthCheck:
+    checkIntervalSec: 60
+    timeoutSec: 59
+    type: HTTP
+    requestPath: /login
