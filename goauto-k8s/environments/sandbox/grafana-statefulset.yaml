@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   labels:
     app.kubernetes.io/component: grafana
@@ -9,6 +9,7 @@ metadata:
   name: grafana
   namespace: monitoring
 spec:
+  serviceName: grafana
   replicas: 1
   selector:
     matchLabels:
@@ -53,6 +54,9 @@ spec:
             - ALL
           readOnlyRootFilesystem: true
         volumeMounts:
+        - mountPath: /var/lib/grafana
+          name: grafana-storage
+          readOnly: false
         - mountPath: /etc/grafana/provisioning/datasources
           name: grafana-datasources
           readOnly: false
@@ -145,6 +149,8 @@ spec:
         runAsUser: 65534
       serviceAccountName: grafana
       volumes:
+      - emptyDir: {}
+        name: grafana-storage
       - name: grafana-datasources
         secret:
           secretName: grafana-datasources
@@ -229,3 +235,16 @@ spec:
       - name: grafana-config
         secret:
           secretName: grafana-config
+  volumeClaimTemplates:
+  - metadata:
+      name: grafana-storage
+      labels:
+        app.kubernetes.io/component: grafana
+        app.kubernetes.io/name: grafana
+        app.kubernetes.io/part-of: kube-prometheus
+        app.kubernetes.io/version: 8.5.5
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 30Gi
