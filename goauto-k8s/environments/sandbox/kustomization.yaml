@@ -13,6 +13,5 @@ resources:
   - kserve-monitor-clusterrolebinding.yaml
   - grafana-statefulset.yaml
   - prometheus-prometheus.yaml
-
  
  

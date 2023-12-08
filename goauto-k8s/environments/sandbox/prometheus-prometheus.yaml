@@ -35,7 +35,8 @@ spec:
   replicas: 2
   resources:
     requests:
-      memory: 400Mi
+      memory: 8000Mi
+  retention: 3w
   ruleNamespaceSelector: {}
   ruleSelector: {}
   scrapeConfigNamespaceSelector: {}

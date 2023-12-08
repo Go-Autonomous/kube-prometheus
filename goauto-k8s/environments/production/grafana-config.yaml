@@ -5,7 +5,7 @@ metadata:
     app.kubernetes.io/component: grafana
     app.kubernetes.io/name: grafana
     app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: 8.5.5
+    app.kubernetes.io/version: 10.2.2
   name: grafana-config
   namespace: monitoring
 stringData:
@@ -19,8 +19,8 @@ stringData:
 
     [auth.google]
     enabled = true
-    client_id = 921266374863-qeuib67cdpni05fdd6vjp6pfv6u9rblp.apps.googleusercontent.com
-    client_secret = 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
+    client_id = [REDACTED]
+    client_secret = [REDACTED]
     scopes = https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email
     auth_url = https://accounts.google.com/o/oauth2/auth
     token_url = https://accounts.google.com/o/oauth2/token
@@ -31,9 +31,13 @@ stringData:
     enabled = true
     host = smtp.sendgrid.net:465
     user = apikey
-    password = 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
+    password = [REDACTED]
     skip_verify = false
     from_address = grafana@goautonomous.io
     from_name = Grafana
 
+    [database]
+    wal: true
+
 type: Opaque
+ 

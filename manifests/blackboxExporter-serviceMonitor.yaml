@@ -11,7 +11,7 @@ metadata:
 spec:
   endpoints:
   - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-    interval: 30s
+    interval: 60s
     path: /metrics
     port: https
     scheme: https

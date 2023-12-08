@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: fastapi-app-exporter
+  labels:
+    app.kubernetes.io/name: fastapi-app-exporter
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      prometheus.io/scrape: "true"
+      app-type: "fastapi"
+  namespaceSelector:
+    any: true
+  endpoints:
+  - interval: 60s
+    port: http
+    path: /metrics
