@@ -38,7 +38,7 @@ spec:
     requests:
       memory: 14000Mi
       cpu: 1
-  retention: 3w
+  retention: 1w
   ruleNamespaceSelector: {}
   ruleSelector: {}
   scrapeConfigNamespaceSelector: {}
@@ -62,4 +62,4 @@ spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
-            storage: 50Gi
+            storage: 100Gi
