@@ -1,0 +1,12 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: istio-sidecars
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      istio: "ingressgateway"
+  podMetricsEndpoints:
+    - port: http-envoy-prom
+      path: /stats/prometheus

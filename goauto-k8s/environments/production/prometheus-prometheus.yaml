@@ -12,10 +12,10 @@ metadata:
 spec:
   alerting:
     alertmanagers:
-    - apiVersion: v2
-      name: alertmanager-main
-      namespace: monitoring
-      port: web
+      - apiVersion: v2
+        name: alertmanager-main
+        namespace: monitoring
+        port: web
   enableFeatures: []
   externalLabels: {}
   image: quay.io/prometheus/prometheus:v2.48.0
@@ -51,10 +51,15 @@ spec:
   serviceMonitorNamespaceSelector: {}
   serviceMonitorSelector: {}
   version: 2.48.0
+  thanos:
+    image: quay.io/thanos/thanos:v0.32.5
+    objectStorageConfig:
+      key: thanos.yaml
+      name: thanos-objstore-config
   storage:
     volumeClaimTemplate:
       spec:
-        accessModes: [ "ReadWriteOnce" ]
+        accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 50Gi
