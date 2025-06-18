@@ -62,4 +62,4 @@ spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
-            storage: 100Gi
+            storage: 200Gi # For existing resources, check this doc to propagate the changes https://prometheus-operator.dev/docs/platform/storage/#resizing-volumes
