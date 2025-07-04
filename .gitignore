@@ -8,3 +8,7 @@ crdschemas/
 
 developer-workspace/gitpod/_output
 developer-workspace/codespaces/kind 
+goauto-k8s/environments/production/grafana-config.yaml
+goauto-k8s/environments/sandbox/grafana-config.yaml
+goauto-k8s/environments/production/thanos/thanos-config-not-working.yaml
+goauto-k8s/environments/production/thanos/thanos.yaml

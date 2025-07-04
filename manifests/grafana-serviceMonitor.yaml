@@ -10,7 +10,7 @@ metadata:
   namespace: monitoring
 spec:
   endpoints:
-  - interval: 15s
+  - interval: 60s
     port: http
   selector:
     matchLabels:

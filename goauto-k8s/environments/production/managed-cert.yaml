@@ -1,0 +1,9 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: grafana-managed-cert
+  namespace: monitoring
+spec:
+  domains:
+    - grafana.prod.goautonomous.ai
+    - www.grafana.prod.goautonomous.ai
