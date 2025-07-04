@@ -175,7 +175,10 @@ function(params) {
              ] +
              (
                if p._config.thanos != null then
-                 [{ name: 'grpc', port: 10901, targetPort: 10901 }]
+                 [
+                   { name: 'grpc', port: 10901, targetPort: 10901 },
+                   { name: 'http', port: 10902, targetPort: 10902 },
+                 ]
                else []
              ),
       selector: p._config.selectorLabels,
@@ -220,7 +223,7 @@ function(params) {
         verbs: ['get'],
       },
       {
-        nonResourceURLs: ['/metrics'],
+        nonResourceURLs: ['/metrics', '/metrics/slis'],
         verbs: ['get'],
       },
     ],
@@ -360,6 +363,7 @@ function(params) {
         fsGroup: 2000,
       },
       [if std.objectHas(params, 'thanos') then 'thanos']: p._config.thanos,
+      [if std.objectHas(params, 'storage') then 'storage']: p._config.storage,
     },
   },
 
