@@ -6,19 +6,19 @@ metadata:
     app.kubernetes.io/instance: k8s
     app.kubernetes.io/name: prometheus
     app.kubernetes.io/part-of: kube-prometheus
-    app.kubernetes.io/version: 2.48.0
+    app.kubernetes.io/version: 3.4.0
   name: k8s
   namespace: monitoring
 spec:
   alerting:
     alertmanagers:
-      - apiVersion: v2
-        name: alertmanager-main
-        namespace: monitoring
-        port: web
+    - apiVersion: v2
+      name: alertmanager-main
+      namespace: monitoring
+      port: web
   enableFeatures: []
   externalLabels: {}
-  image: quay.io/prometheus/prometheus:v2.48.0
+  image: quay.io/prometheus/prometheus:v3.4.0
   nodeSelector:
     kubernetes.io/os: linux
   podMetadata:
@@ -27,7 +27,7 @@ spec:
       app.kubernetes.io/instance: k8s
       app.kubernetes.io/name: prometheus
       app.kubernetes.io/part-of: kube-prometheus
-      app.kubernetes.io/version: 2.48.0
+      app.kubernetes.io/version: 3.4.0
   podMonitorNamespaceSelector: {}
   podMonitorSelector: {}
   probeNamespaceSelector: {}
@@ -50,9 +50,9 @@ spec:
   serviceAccountName: prometheus-k8s
   serviceMonitorNamespaceSelector: {}
   serviceMonitorSelector: {}
-  version: 2.48.0
+  version: 3.4.0
   thanos:
-    image: quay.io/thanos/thanos:v0.32.5
+    image: quay.io/thanos/thanos:v0.39.1
     objectStorageConfig:
       key: thanos.yaml
       name: thanos-objstore-config

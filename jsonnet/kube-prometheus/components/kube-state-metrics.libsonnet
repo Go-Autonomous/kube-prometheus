@@ -164,6 +164,9 @@ function(params) (import 'github.com/kubernetes/kube-state-metrics/jsonnet/kube-
             ports:: null,
             livenessProbe:: null,
             readinessProbe:: null,
+            securityContext+: {
+              runAsGroup: 65534,
+            },
             args: ['--host=127.0.0.1', '--port=8081', '--telemetry-host=127.0.0.1', '--telemetry-port=8082'],
             resources: ksm._config.resources,
           }, super.containers) + [kubeRbacProxyMain, kubeRbacProxySelf],
@@ -197,9 +200,9 @@ function(params) (import 'github.com/kubernetes/kube-state-metrics/jsonnet/kube-
             ],
             metricRelabelings: [
               {
-                // Dropping metric deprecated from kube-state-metrics 2.6.0 version
+                // Dropping metric deprecated from kube-state-metrics 2.6.0 & 2.14.0 versions
                 sourceLabels: ['__name__'],
-                regex: 'kube_endpoint_address_not_ready|kube_endpoint_address_available',
+                regex: 'kube_(endpoint_(address_not_ready|address_available|ports))',
                 action: 'drop',
               },
             ],
