@@ -51,7 +51,17 @@ spec:
             - --grpc-address=0.0.0.0:10901
             - --http-address=0.0.0.0:10902
             - --objstore.config=$(OBJSTORE_CONFIG)
-            - --ignore-deletion-marks-delay=24h
+            - --ignore-deletion-marks-delay=48h
+            - --sync-block-duration=5m
+            - --block-sync-concurrency=50
+            - --consistency-delay=30m
+            - --index-cache-size=4GB
+            - --chunk-pool-size=8GB
+            - --store.grpc.series-sample-limit=0
+            - --store.grpc.series-max-concurrency=200
+            - --grpc-grace-period=2m
+            - --store.grpc.touched-series-limit=0
+            - --block-meta-fetch-concurrency=32
           env:
             - name: OBJSTORE_CONFIG
               valueFrom:
@@ -65,13 +75,14 @@ spec:
           image: quay.io/thanos/thanos:v0.39.1
           imagePullPolicy: IfNotPresent
           livenessProbe:
-            failureThreshold: 8
+            failureThreshold: 60
             httpGet:
               path: /-/healthy
               port: 10902
               scheme: HTTP
             periodSeconds: 30
-            timeoutSeconds: 1
+            timeoutSeconds: 10
+            initialDelaySeconds: 3600
           name: thanos-store
           ports:
             - containerPort: 10901
@@ -79,13 +90,21 @@ spec:
             - containerPort: 10902
               name: http
           readinessProbe:
-            failureThreshold: 20
+            failureThreshold: 400
             httpGet:
               path: /-/ready
               port: 10902
               scheme: HTTP
             periodSeconds: 5
-          resources: {}
+            timeoutSeconds: 10
+            initialDelaySeconds: 3600
+          resources:
+            requests:
+              memory: "12Gi"
+              cpu: "500m"
+            limits:
+              memory: "20Gi"
+              cpu: "2000m"
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
