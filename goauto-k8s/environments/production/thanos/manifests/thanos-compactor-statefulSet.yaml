@@ -1,0 +1,152 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.kubernetes.io/component: compactor
+    app.kubernetes.io/instance: thanos-compactor
+    app.kubernetes.io/name: thanos-compactor
+    app.kubernetes.io/version: v0.39.1
+  name: thanos-compactor
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: compactor
+      app.kubernetes.io/instance: thanos-compactor
+      app.kubernetes.io/name: thanos-compactor
+  serviceName: thanos-compactor
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: compactor
+        app.kubernetes.io/instance: thanos-compactor
+        app.kubernetes.io/name: thanos-compactor
+        app.kubernetes.io/version: v0.39.1
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - thanos-compactor
+                    - key: app.kubernetes.io/instance
+                      operator: In
+                      values:
+                        - thanos-compactor
+                namespaces:
+                  - monitoring
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+      containers:
+        - args:
+            - compact
+            - --wait
+            - --log.level=info
+            - --log.format=logfmt
+            - --data-dir=/var/thanos/compactor
+            - --objstore.config=$(OBJSTORE_CONFIG)
+            - --http-address=0.0.0.0:10902
+            - --debug.accept-malformed-index
+            # Retention configuration for slimming down data
+            # Keep raw data for 90 days (more conservative for historical data)
+            - --retention.resolution-raw=90d
+            # Keep 5-minute downsampled data for 6 months
+            - --retention.resolution-5m=180d
+            # Keep 1-hour downsampled data for 1 year (for long-term historical data)
+            - --retention.resolution-1h=365d
+            - --delete-delay=12h
+            - --consistency-delay=30m
+            - --deduplication.replica-label=prometheus_replica
+            - --deduplication.replica-label=rule_replica
+            - --compact.concurrency=6
+            - --downsample.concurrency=6
+            - --compact.cleanup-interval=5m
+            - --compact.progress-interval=2m
+            - --web.disable-cors
+          env:
+            - name: OBJSTORE_CONFIG
+              valueFrom:
+                secretKeyRef:
+                  key: thanos.yaml
+                  name: thanos-objstore-config
+            - name: HOST_IP_ADDRESS
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+          image: quay.io/thanos/thanos:v0.39.1
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /-/healthy
+              port: 10902
+              scheme: HTTP
+            periodSeconds: 30
+            timeoutSeconds: 10
+            initialDelaySeconds: 30
+          name: thanos-compactor
+          ports:
+            - containerPort: 10902
+              name: http
+          readinessProbe:
+            failureThreshold: 20
+            httpGet:
+              path: /-/ready
+              port: 10902
+              scheme: HTTP
+            periodSeconds: 5
+            timeoutSeconds: 10
+            initialDelaySeconds: 30
+          resources:
+            requests:
+              memory: "4Gi"      # Increased for higher concurrency
+              cpu: "3000m"       # More CPU for parallel operations
+            limits:
+              memory: "8Gi"     # Increased headroom for concurrent operations
+              cpu: "5000m"       # Adequate CPU for increased concurrency
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsGroup: 65532
+            runAsNonRoot: true
+            runAsUser: 65534
+            seccompProfile:
+              type: RuntimeDefault
+          terminationMessagePolicy: FallbackToLogsOnError
+          volumeMounts:
+            - mountPath: /var/thanos/compactor
+              name: data
+              readOnly: false
+      nodeSelector:
+        kubernetes.io/os: linux
+      securityContext:
+        fsGroup: 65534
+        runAsGroup: 65532
+        runAsNonRoot: true
+        runAsUser: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccountName: thanos-compactor
+      terminationGracePeriodSeconds: 120
+      volumes: []
+  volumeClaimTemplates:
+    - metadata:
+        labels:
+          app.kubernetes.io/component: compactor
+          app.kubernetes.io/instance: thanos-compactor
+          app.kubernetes.io/name: thanos-compactor
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Gi
