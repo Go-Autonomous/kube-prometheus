@@ -46,8 +46,19 @@ spec:
             - --log.format=logfmt
             - --query.replica-label=prometheus_replica
             - --query.replica-label=rule_replica
-            - --endpoint=dnssrv+_grpc._tcp.thanos-store.monitoring.svc.cluster.local:10901
+            - --query.timeout=10m
+            - --store.unhealthy-timeout=5m
+            - --query.max-concurrent=40
+            - --query.max-concurrent-select=8
+            - --grpc-compression=snappy
+            - --store.response-timeout=5m
+            - --query.lookback-delta=5m
+            - --query.partial-response
+            - --query.default-evaluation-interval=30s
+            - --endpoint=thanos-store-0.thanos-store.monitoring.svc.cluster.local:10901
+            - --endpoint=thanos-store-1.thanos-store.monitoring.svc.cluster.local:10901
             - --endpoint=dnssrv+_grpc._tcp.prometheus-operated.monitoring.svc.cluster.local:10901
+            - --endpoint=dnssrv+_grpc._tcp.thanos-receive-ingestor-default.monitoring.svc.cluster.local:10901
             - --endpoint=dnssrv+_grpc._tcp.thanos-receive-ingestor-default.monitoring.svc.cluster.local:10901
             - --query.auto-downsampling
           env:
@@ -58,12 +69,14 @@ spec:
           image: quay.io/thanos/thanos:v0.39.1
           imagePullPolicy: IfNotPresent
           livenessProbe:
-            failureThreshold: 4
+            failureThreshold: 6
             httpGet:
               path: /-/healthy
               port: 9090
               scheme: HTTP
             periodSeconds: 30
+            timeoutSeconds: 5
+            initialDelaySeconds: 15
           name: thanos-query
           ports:
             - containerPort: 10901
@@ -77,7 +90,15 @@ spec:
               port: 9090
               scheme: HTTP
             periodSeconds: 5
-          resources: {}
+            timeoutSeconds: 5
+            initialDelaySeconds: 10
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "200m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:

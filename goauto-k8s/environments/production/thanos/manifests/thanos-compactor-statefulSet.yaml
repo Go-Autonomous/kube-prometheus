@@ -2,26 +2,26 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   labels:
-    app.kubernetes.io/component: object-store-gateway
-    app.kubernetes.io/instance: thanos-store
-    app.kubernetes.io/name: thanos-store
+    app.kubernetes.io/component: compactor
+    app.kubernetes.io/instance: thanos-compactor
+    app.kubernetes.io/name: thanos-compactor
     app.kubernetes.io/version: v0.39.1
-  name: thanos-store
+  name: thanos-compactor
   namespace: monitoring
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/component: object-store-gateway
-      app.kubernetes.io/instance: thanos-store
-      app.kubernetes.io/name: thanos-store
-  serviceName: thanos-store
+      app.kubernetes.io/component: compactor
+      app.kubernetes.io/instance: thanos-compactor
+      app.kubernetes.io/name: thanos-compactor
+  serviceName: thanos-compactor
   template:
     metadata:
       labels:
-        app.kubernetes.io/component: object-store-gateway
-        app.kubernetes.io/instance: thanos-store
-        app.kubernetes.io/name: thanos-store
+        app.kubernetes.io/component: compactor
+        app.kubernetes.io/instance: thanos-compactor
+        app.kubernetes.io/name: thanos-compactor
         app.kubernetes.io/version: v0.39.1
     spec:
       affinity:
@@ -33,35 +33,41 @@ spec:
                     - key: app.kubernetes.io/name
                       operator: In
                       values:
-                        - thanos-store
+                        - thanos-compactor
                     - key: app.kubernetes.io/instance
                       operator: In
                       values:
-                        - thanos-store
+                        - thanos-compactor
                 namespaces:
-                  - thanos
+                  - monitoring
                 topologyKey: kubernetes.io/hostname
               weight: 100
       containers:
         - args:
-            - store
+            - compact
+            - --wait
             - --log.level=info
             - --log.format=logfmt
-            - --data-dir=/var/thanos/store
-            - --grpc-address=0.0.0.0:10901
-            - --http-address=0.0.0.0:10902
+            - --data-dir=/var/thanos/compactor
             - --objstore.config=$(OBJSTORE_CONFIG)
-            - --ignore-deletion-marks-delay=48h
-            - --sync-block-duration=5m
-            - --block-sync-concurrency=50
+            - --http-address=0.0.0.0:10902
+            - --debug.accept-malformed-index
+            # Retention configuration for slimming down data
+            # Keep raw data for 90 days (more conservative for historical data)
+            - --retention.resolution-raw=90d
+            # Keep 5-minute downsampled data for 6 months
+            - --retention.resolution-5m=180d
+            # Keep 1-hour downsampled data for 1 year (for long-term historical data)
+            - --retention.resolution-1h=365d
+            - --delete-delay=12h
             - --consistency-delay=30m
-            - --index-cache-size=4GB
-            - --chunk-pool-size=8GB
-            - --store.grpc.series-sample-limit=0
-            - --store.grpc.series-max-concurrency=200
-            - --grpc-grace-period=2m
-            - --store.grpc.touched-series-limit=0
-            - --block-meta-fetch-concurrency=32
+            - --deduplication.replica-label=prometheus_replica
+            - --deduplication.replica-label=rule_replica
+            - --compact.concurrency=6
+            - --downsample.concurrency=6
+            - --compact.cleanup-interval=5m
+            - --compact.progress-interval=2m
+            - --web.disable-cors
           env:
             - name: OBJSTORE_CONFIG
               valueFrom:
@@ -75,36 +81,34 @@ spec:
           image: quay.io/thanos/thanos:v0.39.1
           imagePullPolicy: IfNotPresent
           livenessProbe:
-            failureThreshold: 60
+            failureThreshold: 6
             httpGet:
               path: /-/healthy
               port: 10902
               scheme: HTTP
             periodSeconds: 30
             timeoutSeconds: 10
-            initialDelaySeconds: 3600
-          name: thanos-store
+            initialDelaySeconds: 30
+          name: thanos-compactor
           ports:
-            - containerPort: 10901
-              name: grpc
             - containerPort: 10902
               name: http
           readinessProbe:
-            failureThreshold: 400
+            failureThreshold: 20
             httpGet:
               path: /-/ready
               port: 10902
               scheme: HTTP
             periodSeconds: 5
             timeoutSeconds: 10
-            initialDelaySeconds: 3600
+            initialDelaySeconds: 30
           resources:
             requests:
-              memory: "12Gi"
-              cpu: "500m"
+              memory: "4Gi"      # Increased for higher concurrency
+              cpu: "3000m"       # More CPU for parallel operations
             limits:
-              memory: "20Gi"
-              cpu: "2000m"
+              memory: "8Gi"     # Increased headroom for concurrent operations
+              cpu: "5000m"       # Adequate CPU for increased concurrency
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -118,7 +122,7 @@ spec:
               type: RuntimeDefault
           terminationMessagePolicy: FallbackToLogsOnError
           volumeMounts:
-            - mountPath: /var/thanos/store
+            - mountPath: /var/thanos/compactor
               name: data
               readOnly: false
       nodeSelector:
@@ -130,19 +134,19 @@ spec:
         runAsUser: 65534
         seccompProfile:
           type: RuntimeDefault
-      serviceAccountName: thanos-store
+      serviceAccountName: thanos-compactor
       terminationGracePeriodSeconds: 120
       volumes: []
   volumeClaimTemplates:
     - metadata:
         labels:
-          app.kubernetes.io/component: object-store-gateway
-          app.kubernetes.io/instance: thanos-store
-          app.kubernetes.io/name: thanos-store
+          app.kubernetes.io/component: compactor
+          app.kubernetes.io/instance: thanos-compactor
+          app.kubernetes.io/name: thanos-compactor
         name: data
       spec:
         accessModes:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 50Gi
+            storage: 100Gi
