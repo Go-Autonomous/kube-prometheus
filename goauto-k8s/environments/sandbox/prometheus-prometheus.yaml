@@ -48,4 +48,13 @@ spec:
   serviceAccountName: prometheus-k8s
   serviceMonitorNamespaceSelector: {}
   serviceMonitorSelector: {}
+  storage:
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            # For existing resources, check this doc to propagate the changes https://prometheus-operator.dev/docs/platform/storage/#resizing-volumes
+            storage: 100Gi
   version: 3.4.0

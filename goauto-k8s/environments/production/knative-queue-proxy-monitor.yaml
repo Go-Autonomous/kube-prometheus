@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: knative-queue-proxy
+  labels:
+    app.kubernetes.io/name: knative-queue-proxy
+  namespace: monitoring
+spec:
+  selector:
+    matchExpressions:
+      - key: serving.knative.dev/revision
+        operator: Exists
+  namespaceSelector:
+    any: true
+  podMetricsEndpoints:
+    - port: http-usermetric
+      path: /metrics
+      interval: 15s
