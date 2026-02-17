@@ -1,0 +1,120 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app.kubernetes.io/component: prometheus
+    app.kubernetes.io/instance: k8s
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/part-of: kube-prometheus
+    prometheus: k8s
+    role: alert-rules
+  name: milvus-prometheus-rules
+  namespace: monitoring
+spec:
+  groups:
+  - name: milvus
+    rules:
+    - alert: MilvusFlushFailed
+      expr: sum(increase(milvus_proxy_req_count{function_name="Flush",status!~"success|total"}[5m])) > 15
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Milvus flush failures above threshold
+        description: "{{ $value | humanize }} failed Flush requests in last 5m (threshold 15)"
+
+    - alert: MilvusFlushFailedCritical
+      expr: sum(increase(milvus_proxy_req_count{function_name="Flush",status!~"success|total"}[5m])) > 100
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: Milvus flush failures critical
+        description: "{{ $value | humanize }} failed Flush requests in last 5m (threshold 100)"
+
+    - alert: MilvusFlushRateLimited
+      expr: sum(increase(milvus_proxy_rate_limit_req_count{msg_type="DDLFlush"}[5m])) > 55
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Milvus DDL Flush rate limited
+        description: "{{ $value | humanize }} DDLFlush rate limit hits in last 5m (threshold 55)"
+
+    - alert: MilvusCheckpointLagHigh
+      expr: (time() - milvus_datacoord_channel_checkpoint_unix_seconds) > 90
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Milvus checkpoint lag high
+        description: Channel checkpoint lag {{ $value | humanize }}s (threshold 90s)
+
+    - alert: MilvusCheckpointLagCritical
+      expr: (time() - milvus_datacoord_channel_checkpoint_unix_seconds) > 300
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: Milvus checkpoint lag critical
+        description: Channel checkpoint lag {{ $value | humanize }}s (threshold 5min)
+
+    - alert: MilvusMutationLatencyHigh
+      expr: |
+        (histogram_quantile(0.95, sum by (le) (rate(milvus_proxy_mutation_latency_bucket[5m]))) > 2500)
+        and (sum(increase(milvus_proxy_mutation_latency_count[5m])) >= 5)
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Milvus mutation latency p95 high
+        description: p95 mutation latency {{ $value | humanize }}ms (threshold 2500ms, min 5 req)
+
+    - alert: MilvusCompactionBacklogHigh
+      expr: max(milvus_datacoord_compaction_task_num{compaction_type="SortCompaction",status="executing"}) > 1500
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Milvus SortCompaction backlog high
+        description: SortCompaction executing {{ $value | humanize }} tasks (threshold 1500)
+
+    - alert: MilvusSearchLatencyHigh
+      expr: |
+        (histogram_quantile(0.95, sum by (le) (rate(milvus_proxy_sq_latency_bucket{query_type="search"}[5m]))) > 5000)
+        and (sum(increase(milvus_proxy_sq_latency_count{query_type="search"}[5m])) >= 5)
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Milvus search latency p95 high
+        description: p95 search latency {{ $value | humanize }}ms (threshold 5000ms, min 5 req)
+
+    - alert: MilvusQueryLatencyHigh
+      expr: |
+        (histogram_quantile(0.95, sum by (le) (rate(milvus_proxy_sq_latency_bucket{query_type="query"}[5m]))) > 1500)
+        and (sum(increase(milvus_proxy_sq_latency_count{query_type="query"}[5m])) >= 5)
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Milvus query latency p95 high
+        description: p95 query latency {{ $value | humanize }}ms (threshold 1500ms, min 5 req)
+
+    - alert: MilvusSlowQueriesDetected
+      expr: sum(increase(milvus_proxy_slow_query_count[5m])) > 0
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Milvus slow queries detected
+        description: "{{ $value | humanize }} slow queries in last 5m"
+
+    - alert: MilvusProxyDown
+      expr: up{job="milvus"} == 0 or absent(up{job="milvus"})
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: Milvus not scraped
+        description: Milvus metrics not available (job=milvus)

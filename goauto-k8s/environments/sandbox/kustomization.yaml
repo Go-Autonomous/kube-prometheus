@@ -14,5 +14,6 @@ resources:
   - grafana-statefulset.yaml
   - prometheus-prometheus.yaml
   - knative-queue-proxy-monitor.yaml
+  - milvus-prometheusrule.yaml
  
  
