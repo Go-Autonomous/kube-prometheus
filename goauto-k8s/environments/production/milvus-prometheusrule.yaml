@@ -19,6 +19,7 @@ spec:
       for: 5m
       labels:
         severity: warning
+        alertgroup: milvus
       annotations:
         summary: Milvus flush failures above threshold
         description: "{{ $value | humanize }} failed Flush requests in last 5m (threshold 15)"
@@ -28,6 +29,7 @@ spec:
       for: 5m
       labels:
         severity: critical
+        alertgroup: milvus
       annotations:
         summary: Milvus flush failures critical
         description: "{{ $value | humanize }} failed Flush requests in last 5m (threshold 100)"
@@ -37,6 +39,7 @@ spec:
       for: 5m
       labels:
         severity: warning
+        alertgroup: milvus
       annotations:
         summary: Milvus DDL Flush rate limited
         description: "{{ $value | humanize }} DDLFlush rate limit hits in last 5m (threshold 55)"
@@ -46,6 +49,7 @@ spec:
       for: 5m
       labels:
         severity: warning
+        alertgroup: milvus
       annotations:
         summary: Milvus checkpoint lag high
         description: Channel checkpoint lag {{ $value | humanize }}s (threshold 90s)
@@ -55,6 +59,7 @@ spec:
       for: 5m
       labels:
         severity: critical
+        alertgroup: milvus
       annotations:
         summary: Milvus checkpoint lag critical
         description: Channel checkpoint lag {{ $value | humanize }}s (threshold 5min)
@@ -66,18 +71,10 @@ spec:
       for: 5m
       labels:
         severity: warning
+        alertgroup: milvus
       annotations:
         summary: Milvus mutation latency p95 high
         description: p95 mutation latency {{ $value | humanize }}ms (threshold 2500ms, min 5 req)
-
-    - alert: MilvusCompactionBacklogHigh
-      expr: max(milvus_datacoord_compaction_task_num{compaction_type="SortCompaction",status="executing"}) > 1500
-      for: 5m
-      labels:
-        severity: warning
-      annotations:
-        summary: Milvus SortCompaction backlog high
-        description: SortCompaction executing {{ $value | humanize }} tasks (threshold 1500)
 
     - alert: MilvusSearchLatencyHigh
       expr: |
@@ -86,6 +83,7 @@ spec:
       for: 5m
       labels:
         severity: warning
+        alertgroup: milvus
       annotations:
         summary: Milvus search latency p95 high
         description: p95 search latency {{ $value | humanize }}ms (threshold 5000ms, min 5 req)
@@ -97,6 +95,7 @@ spec:
       for: 5m
       labels:
         severity: warning
+        alertgroup: milvus
       annotations:
         summary: Milvus query latency p95 high
         description: p95 query latency {{ $value | humanize }}ms (threshold 1500ms, min 5 req)
@@ -106,15 +105,17 @@ spec:
       for: 5m
       labels:
         severity: warning
+        alertgroup: milvus
       annotations:
         summary: Milvus slow queries detected
         description: "{{ $value | humanize }} slow queries in last 5m"
 
     - alert: MilvusProxyDown
       expr: up{job="milvus"} == 0 or absent(up{job="milvus"})
-      for: 5m
+      for: 15m
       labels:
         severity: critical
+        alertgroup: milvus
       annotations:
         summary: Milvus not scraped
         description: Milvus metrics not available (job=milvus)

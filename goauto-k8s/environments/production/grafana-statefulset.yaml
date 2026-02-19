@@ -62,6 +62,9 @@ spec:
         - mountPath: /etc/grafana/provisioning/dashboards
           name: grafana-dashboards
           readOnly: false
+        - mountPath: /etc/grafana/provisioning/alerting
+          name: grafana-alerting-contactpoints
+          readOnly: true
         - mountPath: /var/lib/grafana/plugins
           name: tmp-plugins
           readOnly: false
@@ -156,6 +159,9 @@ spec:
       - configMap:
           name: grafana-dashboards
         name: grafana-dashboards
+      - name: grafana-alerting-contactpoints
+        secret:
+          secretName: grafana-alerting-contactpoints
       - emptyDir:
           medium: Memory
         name: tmp-plugins
