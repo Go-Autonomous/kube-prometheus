@@ -14,15 +14,25 @@ spec:
   groups:
   - name: milvus
     rules:
+    - alert: MilvusProxyDown
+      expr: up{job="milvus"} == 0
+      for: 15m
+      labels:
+        severity: critical
+        alertgroup: milvus
+      annotations:
+        summary: Milvus proxy down
+        description: Milvus scrape target is down (job=milvus)
+
     - alert: MilvusFlushFailed
-      expr: sum(increase(milvus_proxy_req_count{function_name="Flush",status!~"success|total"}[5m])) > 15
+      expr: sum(increase(milvus_proxy_req_count{function_name="Flush",status!~"success|total"}[5m])) > 30
       for: 5m
       labels:
         severity: warning
         alertgroup: milvus
       annotations:
         summary: Milvus flush failures above threshold
-        description: "{{ $value | humanize }} failed Flush requests in last 5m (threshold 15)"
+        description: "{{ $value | humanize }} failed Flush requests in last 5m (threshold 30)"
 
     - alert: MilvusFlushFailedCritical
       expr: sum(increase(milvus_proxy_req_count{function_name="Flush",status!~"success|total"}[5m])) > 100
