@@ -14,15 +14,25 @@ spec:
   groups:
   - name: milvus
     rules:
+    - alert: MilvusProxyDown
+      expr: up{job="milvus"} == 0
+      for: 15m
+      labels:
+        severity: critical
+        alertgroup: milvus
+      annotations:
+        summary: Milvus proxy down
+        description: Milvus scrape target is down (job=milvus)
+
     - alert: MilvusFlushFailed
-      expr: sum(increase(milvus_proxy_req_count{function_name="Flush",status!~"success|total"}[5m])) > 15
+      expr: sum(increase(milvus_proxy_req_count{function_name="Flush",status!~"success|total"}[5m])) > 30
       for: 5m
       labels:
         severity: warning
         alertgroup: milvus
       annotations:
         summary: Milvus flush failures above threshold
-        description: "{{ $value | humanize }} failed Flush requests in last 5m (threshold 15)"
+        description: "{{ $value | humanize }} failed Flush requests in last 5m (threshold 30)"
 
     - alert: MilvusFlushFailedCritical
       expr: sum(increase(milvus_proxy_req_count{function_name="Flush",status!~"success|total"}[5m])) > 100
@@ -66,7 +76,7 @@ spec:
 
     - alert: MilvusMutationLatencyHigh
       expr: |
-        (histogram_quantile(0.95, sum by (le) (rate(milvus_proxy_mutation_latency_bucket[5m]))) > 2500)
+        (histogram_quantile(0.95, sum by (le) (rate(milvus_proxy_mutation_latency_bucket[5m]))) > 5000)
         and (sum(increase(milvus_proxy_mutation_latency_count[5m])) >= 5)
       for: 5m
       labels:
@@ -74,7 +84,7 @@ spec:
         alertgroup: milvus
       annotations:
         summary: Milvus mutation latency p95 high
-        description: p95 mutation latency {{ $value | humanize }}ms (threshold 2500ms, min 5 req)
+        description: p95 mutation latency {{ $value | humanize }}ms (threshold 5000ms, min 5 req)
 
     - alert: MilvusSearchLatencyHigh
       expr: |
@@ -110,12 +120,3 @@ spec:
         summary: Milvus slow queries detected
         description: "{{ $value | humanize }} slow queries in last 5m"
 
-    - alert: MilvusProxyDown
-      expr: up{job="milvus"} == 0 or absent(up{job="milvus"})
-      for: 15m
-      labels:
-        severity: critical
-        alertgroup: milvus
-      annotations:
-        summary: Milvus not scraped
-        description: Milvus metrics not available (job=milvus)
