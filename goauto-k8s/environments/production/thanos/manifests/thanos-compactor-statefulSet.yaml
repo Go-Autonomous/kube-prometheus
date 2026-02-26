@@ -52,20 +52,20 @@ spec:
             - --objstore.config=$(OBJSTORE_CONFIG)
             - --http-address=0.0.0.0:10902
             - --debug.accept-malformed-index
-            # Retention configuration for slimming down data
-            # Keep raw data for 90 days (more conservative for historical data)
-            - --retention.resolution-raw=90d
-            # Keep 5-minute downsampled data for 6 months
-            - --retention.resolution-5m=180d
-            # Keep 1-hour downsampled data for 1 year (for long-term historical data)
-            - --retention.resolution-1h=365d
-            - --delete-delay=12h
+            # Retention configuration for 30-day data horizon
+            # Keep raw (high-resolution) data for the last 7 days
+            - --retention.resolution-raw=7d
+            # Keep 5-minute downsampled data for 30 days
+            - --retention.resolution-5m=30d
+            # Keep 1-hour downsampled data for 90 days
+            - --retention.resolution-1h=90d
+            - --delete-delay=1h
             - --consistency-delay=30m
             - --deduplication.replica-label=prometheus_replica
             - --deduplication.replica-label=rule_replica
-            - --compact.concurrency=6
-            - --downsample.concurrency=6
-            - --compact.cleanup-interval=5m
+            - --compact.concurrency=2
+            - --downsample.concurrency=2
+            - --compact.cleanup-interval=1m
             - --compact.progress-interval=2m
             - --web.disable-cors
           env:
