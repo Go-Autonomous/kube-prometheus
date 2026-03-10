@@ -5,7 +5,7 @@ metadata:
     app.kubernetes.io/component: object-store-gateway
     app.kubernetes.io/instance: thanos-store
     app.kubernetes.io/name: thanos-store
-    app.kubernetes.io/version: v0.39.1
+    app.kubernetes.io/version: v0.41.0
   name: thanos-store
   namespace: monitoring
 spec:
@@ -22,7 +22,7 @@ spec:
         app.kubernetes.io/component: object-store-gateway
         app.kubernetes.io/instance: thanos-store
         app.kubernetes.io/name: thanos-store
-        app.kubernetes.io/version: v0.39.1
+        app.kubernetes.io/version: v0.41.0
     spec:
       affinity:
         podAntiAffinity:
@@ -45,7 +45,7 @@ spec:
       containers:
         - args:
             - store
-            - --log.level=info
+            - --log.level=debug
             - --log.format=logfmt
             - --data-dir=/var/thanos/store
             - --grpc-address=0.0.0.0:10901
@@ -74,7 +74,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
-          image: quay.io/thanos/thanos:v0.39.1
+          image: quay.io/thanos/thanos:v0.41.0
           imagePullPolicy: IfNotPresent
           startupProbe:
             failureThreshold: 90

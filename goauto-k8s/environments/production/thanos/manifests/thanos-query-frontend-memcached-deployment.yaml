@@ -37,6 +37,16 @@ spec:
           ports:
             - containerPort: 11211
               name: memcached
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            runAsUser: 11211
+            runAsGroup: 11211
+            seccompProfile:
+              type: RuntimeDefault
           resources:
             requests:
               cpu: "100m"
