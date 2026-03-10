@@ -45,7 +45,7 @@ spec:
       containers:
         - args:
             - store
-            - --log.level=debug
+            - --log.level=info
             - --log.format=logfmt
             - --data-dir=/var/thanos/store
             - --grpc-address=0.0.0.0:10901
@@ -69,7 +69,7 @@ spec:
                   key: thanos.yaml
                   name: thanos-objstore-config
             - name: GOMEMLIMIT
-              value: 18GiB
+              value: 16GiB
             - name: HOST_IP_ADDRESS
               valueFrom:
                 fieldRef:
