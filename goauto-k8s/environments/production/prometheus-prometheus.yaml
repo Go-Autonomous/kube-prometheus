@@ -52,7 +52,7 @@ spec:
   serviceMonitorSelector: {}
   version: 3.4.0
   thanos:
-    image: quay.io/thanos/thanos:v0.39.1
+    image: quay.io/thanos/thanos:v0.41.0
     objectStorageConfig:
       key: thanos.yaml
       name: thanos-objstore-config
