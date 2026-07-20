@@ -55,24 +55,34 @@ spec:
         description: "{{ $value | humanize }} DDLFlush rate limit hits in last 5m (threshold 55)"
 
     - alert: MilvusCheckpointLagHigh
-      expr: (time() - milvus_datacoord_channel_checkpoint_unix_seconds) > 90
+      expr: (time() - milvus_datacoord_channel_checkpoint_unix_seconds{namespace="milvus"}) > 900
+      for: 10m
+      labels:
+        severity: warning
+        alertgroup: milvus
+      annotations:
+        summary: Milvus recovery checkpoint lag high
+        description: 'Channel {{ $labels.channel_name }} recovery checkpoint is {{ $value | humanizeDuration }} behind'
+
+    - alert: MilvusCheckpointLagCritical
+      expr: (time() - milvus_datacoord_channel_checkpoint_unix_seconds{namespace="milvus"}) > 1800
+      for: 10m
+      labels:
+        severity: critical
+        alertgroup: milvus
+      annotations:
+        summary: Milvus recovery checkpoint lag critical
+        description: 'Channel {{ $labels.channel_name }} recovery checkpoint is {{ $value | humanizeDuration }} behind'
+
+    - alert: MilvusDatanodeConsumptionLagHigh
+      expr: max by (node_id, collection_id) (milvus_datanode_consume_tt_lag_ms{namespace="milvus"}) > 30000
       for: 5m
       labels:
         severity: warning
         alertgroup: milvus
       annotations:
-        summary: Milvus checkpoint lag high
-        description: Channel checkpoint lag {{ $value | humanize }}s (threshold 90s)
-
-    - alert: MilvusCheckpointLagCritical
-      expr: (time() - milvus_datacoord_channel_checkpoint_unix_seconds) > 300
-      for: 5m
-      labels:
-        severity: critical
-        alertgroup: milvus
-      annotations:
-        summary: Milvus checkpoint lag critical
-        description: Channel checkpoint lag {{ $value | humanize }}s (threshold 5min)
+        summary: Milvus DataNode consumption stalled
+        description: 'Collection {{ $labels.collection_id }} consumption is {{ $value | humanize }}ms behind'
 
     - alert: MilvusMutationLatencyHigh
       expr: |
