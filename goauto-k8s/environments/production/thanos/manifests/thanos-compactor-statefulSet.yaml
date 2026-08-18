@@ -108,10 +108,19 @@ spec:
             initialDelaySeconds: 30
           resources:
             requests:
-              memory: "2Gi"      # Extra headroom for parallel compaction fetches
+              memory: "3Gi"      # Observed steady-state RSS ~4Gi (mostly mmap'd index page cache)
               cpu: "500m"       # Keep CPU request for sustained compaction throughput
             limits:
-              memory: "6Gi"     # Extra headroom to avoid OOM during downsampling
+              # History: 6Gi caused repeated OOMKills (exit 137, 89 restarts) compacting
+              # oversized level-6 blocks (25-37GB indexes, 8-14d spans, 150-210M series).
+              # Raised to 10Gi as a probe; measured peak RSS over the following 17h /
+              # 65 compactions was 9.84Gi -- i.e. ~1.6% headroom, too close to the limit.
+              # Now 12Gi for ~20% headroom over the observed peak.
+              # Largest blocks (37GB / 35GB indexes) and downsampling are still pending,
+              # so re-check peak RSS once those run.
+              # Node allocatable is 27.6Gi; requests stay at 3Gi so scheduling is unaffected.
+              # Do not raise substantially above this without checking node headroom first.
+              memory: "12Gi"
               cpu: "2000m"       # Keep burst capacity for compaction/downsampling work
           securityContext:
             allowPrivilegeEscalation: false
