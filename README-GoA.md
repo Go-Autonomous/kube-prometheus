@@ -36,6 +36,25 @@ envsubst < goauto-k8s/environments/production/grafana-contactpoints-secret.yaml 
 kubectl apply -k goauto-k8s/environments/production
 ```
 
+### Thanos (separate manifests)
+Thanos lives under `goauto-k8s/environments/production/thanos/manifests/` (not in the main kustomization). Apply with:
+
+```bash
+kubectl apply -f goauto-k8s/environments/production/thanos/manifests/
+```
+
+Includes `thanos-store-podDisruptionBudget.yaml` (`maxUnavailable: 1`) for GKE upgrade safety.
+
+#### Object storage auth (Workload Identity)
+Thanos (compactor, store) and Prometheus authenticate to the GCS bucket via
+Workload Identity — no static key. The KSAs `thanos-compactor`, `thanos-store`
+(thanos manifests) and `prometheus-k8s` (`prometheus-serviceAccount.yaml` in the
+overlay) are annotated with
+`iam.gke.io/gcp-service-account: sa-thanos-storage@saga-prod-goauto-10.iam.gserviceaccount.com`.
+The GSA, its bucket IAM, and the WI bindings are managed in
+`terragrunt-infrastructure` (`modules/iam`). The `thanos-objstore-config` secret
+only contains `type`/`bucket` (no `service_account` block).
+
 ---
 
 ## Verify
