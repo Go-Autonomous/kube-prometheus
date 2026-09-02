@@ -10,6 +10,18 @@ spec:
     matchLabels:
       prometheus.io/scrape: "true"
       app-type: "fastapi"
+    matchExpressions:
+      # A Knative revision gets both a Public and a Private Service, and both
+      # resolve to the same pod IPs on the same port. Without this exclusion
+      # every pod is scraped twice, under two different job names
+      # (e.g. `saga-00377` and `saga-00377-private`).
+      #
+      # NotIn also matches Services that carry no serviceType label at all, so
+      # plain non-Knative Services (e.g. document-processing-viz-service) are
+      # still selected.
+      - key: networking.internal.knative.dev/serviceType
+        operator: NotIn
+        values: ["Public"]
   namespaceSelector:
     any: true
   endpoints:

@@ -1,0 +1,107 @@
+# Mesh-wide Istio telemetry.
+#
+# NOTE: this file documents an existing in-cluster resource that was previously
+# not tracked in git. It was created 2023-03-09 and edited by hand since.
+#
+# The `request_path` normalisation and the REQUEST_DURATION block are new; see
+# the comments below for the reasoning and the measured cardinality impact.
+apiVersion: telemetry.istio.io/v1
+kind: Telemetry
+metadata:
+  name: mesh-default
+  namespace: istio-system
+spec:
+  accessLogging:
+    - providers:
+        - name: envoy
+  metrics:
+    - providers:
+        - name: prometheus
+      overrides:
+        # ------------------------------------------------------------------
+        # REQUEST_COUNT -> istio_requests_total
+        #
+        # org_id / intent are unchanged.
+        #
+        # request_path is now normalised, using the same expression as the
+        # REQUEST_DURATION block below so that an identical path filter works
+        # against both the counter and the histogram.
+        # ------------------------------------------------------------------
+        - match:
+            metric: REQUEST_COUNT
+            mode: CLIENT_AND_SERVER
+          tagOverrides:
+            org_id:
+              operation: UPSERT
+              value: "request.headers['X-Org-Id'] != '' ? request.headers['X-Org-Id'] : 'unknown'"
+            intent:
+              operation: UPSERT
+              value: "request.headers['X-Intent'] != '' ? request.headers['X-Intent'] : 'unknown'"
+            request_path: &normalised_path
+              operation: UPSERT
+              # Bounded path label.
+              #
+              # Rule: a path is kept verbatim only if the request SUCCEEDED
+              # (2xx). Anything else collapses into a small fixed set. This is
+              # self-maintaining -- new real endpoints appear automatically,
+              # while junk paths never earn a series.
+              #
+              # Why: prod sees 3838 distinct raw paths, but only ~112 belong to
+              # real endpoints. The remainder are health probes, GCE metadata
+              # lookups, vulnerability scanners, and image URLs embedded in
+              # inbound customer email (favicon.ico, logo.gif, ...). Emitting
+              # those verbatim on a histogram multiplies its series by ~3.2x.
+              #
+              # An earlier version used a hand-written allowlist of path
+              # prefixes (/v1/, /v2/, /process, ...). That was derived from
+              # sandbox and silently dropped 26 real prod endpoints, including
+              # /detect-language (113k req/24h), /high_runners and the Milvus
+              # gRPC services. The 2xx rule avoids that class of mistake.
+              #
+              # Buckets:
+              #   probe    - liveness/readiness/metrics, incl. the GCP load
+              #              balancer check on "/" (user-agent GoogleHC/1.0)
+              #   metadata - GCE metadata server calls
+              #   blocked  - request rejected (>=400) on an unrecognised path;
+              #              keeps scanner volume visible as ONE series
+              #   other    - non-2xx, non-4xx/5xx on an unrecognised path
+              #              (redirects, aborted connections)
+              value: |
+                (request.url_path == '/metrics'
+                 || request.url_path == '/'
+                 || request.url_path.endsWith('/healthz')
+                 || request.url_path.endsWith('/readyz')
+                 || request.url_path.endsWith('/livez'))
+                  ? 'probe'
+                  : request.url_path.startsWith('/computeMetadata/')
+                    ? 'metadata'
+                    : (response.code >= 200 && response.code < 300)
+                      ? request.url_path
+                      : (response.code >= 400 ? 'blocked' : 'other')
+
+        # ------------------------------------------------------------------
+        # REQUEST_DURATION -> istio_request_duration_milliseconds
+        #
+        # NEW. This metric previously had no tagOverrides, so it carried no
+        # request_path label at all. Every dashboard panel that filtered
+        # latency by request_path was therefore a silent no-op — the filter
+        # matched nothing and quietly included all traffic.
+        #
+        # That mattered because probe traffic is 99%+ of all requests here
+        # (e.g. saga: 4.82 of 4.83 rps), so the latency percentiles were
+        # effectively reporting health-check latency rather than user-facing
+        # request latency.
+        #
+        # Measured impact of adding the normalised label:
+        #   raw url_path : 31.7k -> ~169k series  (+10% of head, +430% of metric)
+        #   normalised   : 31.7k -> ~35k  series  (+0.2% of head)
+        # ------------------------------------------------------------------
+        - match:
+            metric: REQUEST_DURATION
+            mode: CLIENT_AND_SERVER
+          tagOverrides:
+            request_path: *normalised_path
+  tracing:
+    - providers:
+        - name: jaegerzipkintrace
+      randomSamplingPercentage: 25

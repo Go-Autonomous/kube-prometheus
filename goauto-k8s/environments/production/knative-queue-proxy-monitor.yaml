@@ -13,6 +13,43 @@ spec:
   namespaceSelector:
     any: true
   podMetricsEndpoints:
+    # Port 9091 (http-usermetric) only serves data when
+    # `request-metrics-protocol: prometheus` is set in the knative-serving
+    # `config-observability` ConfigMap. Since the OTel rework in Knative 1.19+
+    # that setting defaults to "none" and the port stops listening entirely.
+    #
+    # Do NOT scrape port 9090 (http-autometric): it serves OTLP
+    # `application/protobuf`, which Prometheus cannot parse. The equivalent
+    # per-revision data is already exported by the `autoscaler` job as
+    # `kn_revision_*` metrics.
     - port: http-usermetric
       path: /metrics
       interval: 15s
+      relabelings:
+        # Knative's OTel exporter puts identifying attributes in `target_info`
+        # rather than on each series, so queue-proxy metrics arrive without any
+        # revision/configuration labels. Rebuild them from pod labels to keep
+        # dashboards able to group by revision and configuration.
+        - sourceLabels: [__meta_kubernetes_pod_label_serving_knative_dev_configuration]
+          targetLabel: configuration_name
+          action: replace
+        - sourceLabels: [__meta_kubernetes_pod_label_serving_knative_dev_revision]
+          targetLabel: revision_name
+          action: replace
+        - sourceLabels: [__meta_kubernetes_pod_label_serving_knative_dev_service]
+          targetLabel: service_name
+          action: replace
+        - sourceLabels: [__meta_kubernetes_namespace]
+          targetLabel: namespace_name
+          action: replace
+        # KServe inference services are Knative revisions too, so this
+        # PodMonitor already covers them. Carry the KServe identity across so
+        # the separate `kserve-triton-exporter` ServiceMonitor is not needed —
+        # it scraped the exact same :9091 endpoints and produced no unique
+        # metrics, just a duplicate scrape of every pod.
+        - sourceLabels: [__meta_kubernetes_pod_label_serving_kserve_io_inferenceservice]
+          targetLabel: inferenceservice
+          action: replace
+        - sourceLabels: [__meta_kubernetes_pod_label_component]
+          targetLabel: kserve_component
+          action: replace

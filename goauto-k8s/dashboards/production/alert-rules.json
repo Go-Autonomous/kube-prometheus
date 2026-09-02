@@ -1,0 +1,1548 @@
+[
+  {
+    "annotations": {
+      "__dashboardUid__": "af1f738f-ff26-4575-9d32-85df912d0c67",
+      "__panelId__": "15"
+    },
+    "condition": "C",
+    "data": [
+      {
+        "datasourceUid": "c4b495c4-c353-4d08-885e-cf357376c4e4",
+        "model": {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "c4b495c4-c353-4d08-885e-cf357376c4e4"
+          },
+          "editorMode": "code",
+          "expr": "(\n  sum by (service_basename) (\n    label_replace(\n      rate(istio_requests_total{\n        reporter=\"destination\",\n        request_path!~\"probe|metadata|blocked|other|/metrics|/|/events|.*/readyz|.*/livez|.*/healthz|.*/openapi.*|.*/docs|.*/clear_cache.*|/wait-for-drain\",\n        response_code!~\"[45].*\",\n        grpc_response_status!~\"[1-9].+\"\n      }[$__rate_interval]),\n      \"service_basename\", \"$1\", \"destination_service\", \"([a-z-]*[a-z]).*\"\n    )\n  ) \n  / \n  sum by (service_basename) (\n    label_replace(\n      rate(istio_requests_total{\n        reporter=\"destination\",\n        request_path!~\"probe|metadata|blocked|other|/metrics|/|/events|.*/readyz|.*/livez|.*/healthz|.*/openapi.*|.*/docs|.*/clear_cache.*|/wait-for-drain\"\n      }[$__rate_interval]),\n      \"service_basename\", \"$1\", \"destination_service\", \"([a-z-]*[a-z]).*\"\n    )\n  )\n) * 100",
+          "instant": false,
+          "interval": "",
+          "intervalMs": 30000,
+          "legendFormat": "{{destination_service}}",
+          "maxDataPoints": 43200,
+          "range": true,
+          "refId": "A"
+        },
+        "queryType": "",
+        "refId": "A",
+        "relativeTimeRange": {
+          "from": 3600,
+          "to": 0
+        }
+      },
+      {
+        "datasourceUid": "__expr__",
+        "model": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [],
+                "type": "gt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": []
+              },
+              "reducer": {
+                "params": [],
+                "type": "last"
+              },
+              "type": "query"
+            }
+          ],
+          "datasource": {
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "A",
+          "intervalMs": 1000,
+          "maxDataPoints": 43200,
+          "reducer": "last",
+          "refId": "B",
+          "type": "reduce"
+        },
+        "queryType": "",
+        "refId": "B",
+        "relativeTimeRange": {
+          "from": 0,
+          "to": 0
+        }
+      },
+      {
+        "datasourceUid": "__expr__",
+        "model": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [
+                  50
+                ],
+                "type": "lt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": []
+              },
+              "reducer": {
+                "params": [],
+                "type": "last"
+              },
+              "type": "query"
+            }
+          ],
+          "datasource": {
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "B",
+          "intervalMs": 1000,
+          "maxDataPoints": 43200,
+          "refId": "C",
+          "type": "threshold"
+        },
+        "queryType": "",
+        "refId": "C",
+        "relativeTimeRange": {
+          "from": 0,
+          "to": 0
+        }
+      }
+    ],
+    "execErrState": "Error",
+    "folderUID": "cfhr9osoxuzgge",
+    "for": "3m",
+    "isPaused": false,
+    "keep_firing_for": "0s",
+    "noDataState": "KeepLast",
+    "notification_settings": {
+      "receiver": "Slack-ml-alerts"
+    },
+    "orgID": 1,
+    "record": null,
+    "ruleGroup": "Incident monitoring",
+    "title": "% of succesfull calls (HTTP, gRPC)",
+    "uid": "dfpigghtsgrnkf"
+  },
+  {
+    "annotations": {
+      "__dashboardUid__": "af1f738f-ff26-4575-9d32-85df912d0c67",
+      "__panelId__": "14"
+    },
+    "condition": "C",
+    "data": [
+      {
+        "datasourceUid": "fbde1235-be05-4f72-94a6-06a67f9648dc",
+        "model": {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "fbde1235-be05-4f72-94a6-06a67f9648dc"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "instant": false,
+          "intervalMs": 60000,
+          "maxDataPoints": 43200,
+          "range": true,
+          "rawQuery": true,
+          "rawSql": "SELECT\n  org_id,\n  EXTRACT(EPOCH FROM (NOW() - MIN(created_at))) AS delay_seconds\nFROM\n  bc.mail_envelope me\nWHERE\n  org_id NOT LIKE '%\\_shadow%'\n  AND created_at >= NOW() - INTERVAL '1 hours'\n  AND NOT EXISTS (\n    SELECT 1\n    FROM bc.events e\n    WHERE e.mail_envelope_id = me.mail_envelope_id\n      AND e.event_type = 'process_completed'\n  )\n  AND status = 'processing'\nGROUP BY \n  org_id\nHAVING \n  NOW() - MIN(created_at) > INTERVAL '0 seconds'\n  -- AND NOW() - MIN(created_at) < INTERVAL '1 day'\nORDER BY \n  delay_seconds DESC;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        "queryType": "",
+        "refId": "A",
+        "relativeTimeRange": {
+          "from": 3600,
+          "to": 0
+        }
+      },
+      {
+        "datasourceUid": "__expr__",
+        "model": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [],
+                "type": "gt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": []
+              },
+              "reducer": {
+                "params": [],
+                "type": "last"
+              },
+              "type": "query"
+            }
+          ],
+          "datasource": {
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "A",
+          "intervalMs": 1000,
+          "maxDataPoints": 43200,
+          "reducer": "last",
+          "refId": "B",
+          "type": "reduce"
+        },
+        "queryType": "",
+        "refId": "B",
+        "relativeTimeRange": {
+          "from": 0,
+          "to": 0
+        }
+      },
+      {
+        "datasourceUid": "__expr__",
+        "model": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [
+                  600
+                ],
+                "type": "gt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": []
+              },
+              "reducer": {
+                "params": [],
+                "type": "last"
+              },
+              "type": "query"
+            }
+          ],
+          "datasource": {
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "B",
+          "intervalMs": 1000,
+          "maxDataPoints": 43200,
+          "refId": "C",
+          "type": "threshold"
+        },
+        "queryType": "",
+        "refId": "C",
+        "relativeTimeRange": {
+          "from": 0,
+          "to": 0
+        }
+      }
+    ],
+    "execErrState": "KeepLast",
+    "folderUID": "cfhr9osoxuzgge",
+    "for": "1m",
+    "isPaused": true,
+    "keep_firing_for": "0s",
+    "noDataState": "KeepLast",
+    "notification_settings": {
+      "receiver": "Slack-ml-alerts"
+    },
+    "orgID": 1,
+    "record": null,
+    "ruleGroup": "Incident monitoring",
+    "title": "Customer Perceived Latency",
+    "uid": "afpiglx3z6xvkd"
+  },
+  {
+    "annotations": {
+      "__dashboardUid__": "af1f738f-ff26-4575-9d32-85df912d0c67",
+      "__panelId__": "2",
+      "summary": "Median extraction time is higher that 3 minutes"
+    },
+    "condition": "A",
+    "data": [
+      {
+        "datasourceUid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2",
+        "model": {
+          "datasource": {
+            "type": "postgres",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "intervalMs": 60000,
+          "maxDataPoints": 43200,
+          "rawQuery": true,
+          "rawSql": "WITH time_series AS (\r\n  SELECT\r\n    GENERATE_SERIES(\r\n      $__timeFrom() :: timestamp,\r\n      $__timeTo() :: timestamp,\r\n      '5 min' :: interval\r\n    ) AS date_time\r\n),\r\nevents_data AS (\r\n  SELECT\r\n    DATE_BIN('5 min', date_time, '2000-1-1') AS time,\r\n    PERCENTILE_CONT(0.5) WITHIN GROUP (\r\n      ORDER BY\r\n        CAST(value AS DECIMAL(10, 3))\r\n    ) AS median\r\n  FROM\r\n    metrics.events\r\n  WHERE\r\n    event = 'saga_processing_time'\r\n    AND $__timeFilter(date_time)\r\n    AND org IN ('aerospheres','arla','danfoss','document_demo','emco','fritzschur','ga_demo','ga_review','gianlucas','goa_qa','goautonomous','gotestorg','grundfos','hempel','ifm','jde','kamstrup','kimbrer','klee','leki','leki_demo','mediq','ml','mom','momtex','nilfisk','rockwool','stark','test','topcast','tpaerospace','velux','wesco')\r\n    AND intent IN ('request_simple_order')\r\n    AND (\r\n      (\r\n        'Production' IN ('Production')\r\n        AND (\r\n          is_qa IS NULL\r\n          OR is_qa = FALSE\r\n        )\r\n      )\r\n      OR (\r\n        'Quality Assurance' IN ('Production')\r\n        AND is_qa = TRUE\r\n      )\r\n    )\r\n  GROUP BY\r\n    time\r\n)\r\nSELECT\r\n  date_time,\r\n  COALESCE(median, 0) AS median\r\nFROM\r\n  time_series\r\n  LEFT JOIN events_data ON DATE_BIN('5 min', date_time, '2000-1-1') = time\r\nWHERE\r\n  'median' IN ('median','p90')\r\nORDER BY\r\n  date_time;",
+          "refId": "median",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        "queryType": "",
+        "refId": "median",
+        "relativeTimeRange": {
+          "from": 86400,
+          "to": 0
+        }
+      },
+      {
+        "datasourceUid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2",
+        "model": {
+          "datasource": {
+            "type": "postgres",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "intervalMs": 60000,
+          "maxDataPoints": 43200,
+          "rawQuery": true,
+          "rawSql": "WITH time_series AS (\n  SELECT\n    GENERATE_SERIES(\n      $__timeFrom() :: timestamp,\n      $__timeTo() :: timestamp,\n      '5 min' :: interval\n    ) AS date_time\n),\nevents_data AS (\n  SELECT\n    DATE_BIN('5 min', date_time, '2000-1-1') AS time,\n    COUNT(value) AS count\n  FROM\n    metrics.events\n  WHERE\n    event = 'saga_processing_time'\n    AND $__timeFilter(date_time)\n    AND org IN ('aerospheres','arla','danfoss','document_demo','emco','fritzschur','ga_demo','ga_review','gianlucas','goa_qa','goautonomous','gotestorg','grundfos','hempel','ifm','jde','kamstrup','kimbrer','klee','leki','leki_demo','mediq','ml','mom','momtex','nilfisk','rockwool','stark','test','topcast','tpaerospace','velux','wesco')\n    AND intent IN ('request_simple_order')\n    AND (\n      (\n        'Production' IN ('Production')\n        AND (\n          is_qa IS NULL\n          OR is_qa = FALSE\n        )\n      )\n      OR (\n        'Quality Assurance' IN ('Production')\n        AND is_qa = TRUE\n      )\n    )\n  GROUP BY\n    time\n)\nSELECT\n  date_time,\nCOALESCE(count, 0)AS count\nFROM\n  time_series\n  LEFT JOIN events_data ON DATE_BIN('5 min', date_time, '2000-1-1') = time\nWHERE\n  'median' IN ('median','p90')\nORDER BY\n  date_time;",
+          "refId": "count",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        "queryType": "",
+        "refId": "count",
+        "relativeTimeRange": {
+          "from": 86400,
+          "to": 0
+        }
+      },
+      {
+        "datasourceUid": "__expr__",
+        "model": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [
+                  180,
+                  0
+                ],
+                "type": "gt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": [
+                  "median"
+                ]
+              },
+              "reducer": {
+                "params": [],
+                "type": "last"
+              },
+              "type": "query"
+            },
+            {
+              "evaluator": {
+                "params": [
+                  10,
+                  0
+                ],
+                "type": "gt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": [
+                  "count"
+                ]
+              },
+              "reducer": {
+                "params": [],
+                "type": "last"
+              },
+              "type": "query"
+            }
+          ],
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "",
+          "hide": false,
+          "intervalMs": 1000,
+          "maxDataPoints": 43200,
+          "refId": "A",
+          "type": "classic_conditions"
+        },
+        "queryType": "",
+        "refId": "A",
+        "relativeTimeRange": {
+          "from": 0,
+          "to": 0
+        }
+      },
+      {
+        "datasourceUid": "__expr__",
+        "model": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [
+                  1,
+                  0
+                ],
+                "type": "lt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": [
+                  "count"
+                ]
+              },
+              "reducer": {
+                "params": [],
+                "type": "last"
+              },
+              "type": "query"
+            }
+          ],
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "",
+          "hide": false,
+          "intervalMs": 1000,
+          "maxDataPoints": 43200,
+          "refId": "B",
+          "type": "classic_conditions"
+        },
+        "queryType": "",
+        "refId": "B",
+        "relativeTimeRange": {
+          "from": 0,
+          "to": 0
+        }
+      },
+      {
+        "datasourceUid": "__expr__",
+        "model": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [
+                  0,
+                  0
+                ],
+                "type": "gt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": []
+              },
+              "reducer": {
+                "params": [],
+                "type": "avg"
+              },
+              "type": "query"
+            }
+          ],
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "median",
+          "hide": false,
+          "intervalMs": 1000,
+          "maxDataPoints": 43200,
+          "reducer": "last",
+          "refId": "D",
+          "settings": {
+            "mode": "replaceNN",
+            "replaceWithValue": 0
+          },
+          "type": "reduce"
+        },
+        "queryType": "",
+        "refId": "D",
+        "relativeTimeRange": {
+          "from": 0,
+          "to": 0
+        }
+      },
+      {
+        "datasourceUid": "__expr__",
+        "model": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [
+                  0,
+                  0
+                ],
+                "type": "gt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": []
+              },
+              "reducer": {
+                "params": [],
+                "type": "avg"
+              },
+              "type": "query"
+            }
+          ],
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "count",
+          "hide": false,
+          "intervalMs": 1000,
+          "maxDataPoints": 43200,
+          "reducer": "last",
+          "refId": "C",
+          "settings": {
+            "mode": "replaceNN",
+            "replaceWithValue": 0
+          },
+          "type": "reduce"
+        },
+        "queryType": "",
+        "refId": "C",
+        "relativeTimeRange": {
+          "from": 0,
+          "to": 0
+        }
+      }
+    ],
+    "execErrState": "Error",
+    "folderUID": "_Nh_ekbVz",
+    "for": "1m",
+    "isPaused": false,
+    "keep_firing_for": "0s",
+    "labels": {
+      "SLA": "True"
+    },
+    "noDataState": "NoData",
+    "notification_settings": null,
+    "orgID": 1,
+    "record": null,
+    "ruleGroup": "SLA",
+    "title": "Median extraction time above 3 minutes",
+    "uid": "a1aec6c3-6ff9-4b47-9c8f-82b5c3e777c1"
+  },
+  {
+    "annotations": {
+      "__dashboardUid__": "Bn1mdAR7z",
+      "__panelId__": "2"
+    },
+    "condition": "D",
+    "data": [
+      {
+        "datasourceUid": "c4b495c4-c353-4d08-885e-cf357376c4e4",
+        "model": {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "c4b495c4-c353-4d08-885e-cf357376c4e4"
+          },
+          "editorMode": "code",
+          "expr": "sum by (kn_configuration_name) (kn_revision_pods_count{k8s_namespace_name=\"models\"})",
+          "format": "time_series",
+          "instant": false,
+          "interval": "1s",
+          "intervalFactor": 1,
+          "intervalMs": 15000,
+          "legendFormat": "{{configuration_name}}",
+          "maxDataPoints": 43200,
+          "range": true,
+          "refId": "A"
+        },
+        "queryType": "",
+        "refId": "A",
+        "relativeTimeRange": {
+          "from": 300,
+          "to": 0
+        }
+      },
+      {
+        "datasourceUid": "__expr__",
+        "model": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [],
+                "type": "gt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": [
+                  "B"
+                ]
+              },
+              "reducer": {
+                "params": [],
+                "type": "last"
+              },
+              "type": "query"
+            }
+          ],
+          "datasource": {
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "A",
+          "intervalMs": 1000,
+          "maxDataPoints": 43200,
+          "reducer": "last",
+          "refId": "B",
+          "type": "reduce"
+        },
+        "queryType": "",
+        "refId": "B",
+        "relativeTimeRange": {
+          "from": 300,
+          "to": 0
+        }
+      },
+      {
+        "datasourceUid": "__expr__",
+        "model": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [
+                  1
+                ],
+                "type": "lt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": [
+                  "D"
+                ]
+              },
+              "reducer": {
+                "params": [],
+                "type": "last"
+              },
+              "type": "query"
+            }
+          ],
+          "datasource": {
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "B",
+          "intervalMs": 1000,
+          "maxDataPoints": 43200,
+          "refId": "D",
+          "type": "threshold"
+        },
+        "queryType": "",
+        "refId": "D",
+        "relativeTimeRange": {
+          "from": 300,
+          "to": 0
+        }
+      }
+    ],
+    "execErrState": "OK",
+    "folderUID": "_Nh_ekbVz",
+    "for": "10s",
+    "isPaused": false,
+    "keep_firing_for": "0s",
+    "noDataState": "NoData",
+    "notification_settings": null,
+    "orgID": 1,
+    "record": null,
+    "ruleGroup": "short_period_eval",
+    "title": "Model pod count",
+    "uid": "f1e09eac-f6ea-44d2-aee7-e1fc412f85ed"
+  },
+  {
+    "annotations": {
+      "__dashboardUid__": "_eX4mpl3",
+      "__panelId__": "20"
+    },
+    "condition": "B",
+    "data": [
+      {
+        "datasourceUid": "c4b495c4-c353-4d08-885e-cf357376c4e4",
+        "model": {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "c4b495c4-c353-4d08-885e-cf357376c4e4"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "(sum by (org_ids) (http_request_org_duration_seconds_bucket{handler=\"/v1/extract-mail-request\", le=\"+Inf\",} - http_request_org_duration_seconds_bucket{handler=\"/v1/extract-mail-request\", le=\"+Inf\"} offset 60s)) - (sum by (org_ids) (http_request_org_duration_seconds_bucket{handler=\"/v1/extract-mail-request\", le=\"250.0\"} - http_request_org_duration_seconds_bucket{handler=\"/v1/extract-mail-request\", le=\"250.0\"} offset 60s)) ",
+          "instant": false,
+          "interval": "60",
+          "intervalMs": 15000,
+          "legendFormat": "__auto",
+          "maxDataPoints": 43200,
+          "range": true,
+          "refId": "Requests per second larger than 250s"
+        },
+        "queryType": "",
+        "refId": "Requests per second larger than 250s",
+        "relativeTimeRange": {
+          "from": 300,
+          "to": 0
+        }
+      },
+      {
+        "datasourceUid": "-100",
+        "model": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [
+                  10
+                ],
+                "type": "gt"
+              },
+              "operator": {
+                "type": "when"
+              },
+              "query": {
+                "params": [
+                  "Requests per second larger than 250s"
+                ]
+              },
+              "reducer": {
+                "params": [],
+                "type": "max"
+              },
+              "type": "query"
+            }
+          ],
+          "datasource": {
+            "type": "__expr__",
+            "uid": "-100"
+          },
+          "expression": "$A > 1",
+          "intervalMs": 1000,
+          "maxDataPoints": 43200,
+          "refId": "B",
+          "type": "classic_conditions"
+        },
+        "queryType": "",
+        "refId": "B",
+        "relativeTimeRange": {
+          "from": 0,
+          "to": 0
+        }
+      }
+    ],
+    "execErrState": "OK",
+    "folderUID": "_Nh_ekbVz",
+    "for": "5m",
+    "isPaused": true,
+    "keep_firing_for": "0s",
+    "noDataState": "OK",
+    "notification_settings": null,
+    "orgID": 1,
+    "record": null,
+    "ruleGroup": "saga",
+    "title": "Number of requests per organisation with more than 250 sec processing time per minute",
+    "uid": "krR-JqxVz"
+  },
+  {
+    "annotations": {
+      "__dashboardUid__": "af1f738f-ff26-4575-9d32-85df912d0c67",
+      "__panelId__": "2"
+    },
+    "condition": "C",
+    "data": [
+      {
+        "datasourceUid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2",
+        "model": {
+          "datasource": {
+            "type": "postgres",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "intervalMs": 60000,
+          "maxDataPoints": 43200,
+          "rawQuery": true,
+          "rawSql": "WITH time_series AS (\r\n  SELECT\r\n    GENERATE_SERIES(\r\n      $__timeFrom() :: timestamp,\r\n      $__timeTo() :: timestamp,\r\n      '5 min' :: interval\r\n    ) AS date_time\r\n),\r\nevents_data AS (\r\n  SELECT\r\n    DATE_BIN('5 min', date_time, '2000-1-1') AS time,\r\n    PERCENTILE_CONT(0.9) WITHIN GROUP (\r\n      ORDER BY\r\n        CAST(value AS DECIMAL(10, 3))\r\n    ) AS p90\r\n  FROM\r\n    metrics.events\r\n  WHERE\r\n    event = 'saga_processing_time'\r\n    AND $__timeFilter(date_time)\r\n    AND org IN ('aerospheres','arla','danfoss','document_demo','emco','fritzschur','ga_demo','ga_review','gianlucas','goa_qa','goautonomous','gotestorg','grundfos','hempel','ifm','jde','kamstrup','kimbrer','klee','leki','leki_demo','mediq','ml','mom','momtex','nilfisk','rockwool','stark','test','topcast','tpaerospace','velux','wesco')\r\n    AND intent IN ('request_simple_order')\r\n    AND (\r\n      (\r\n        'Production' IN ('Production')\r\n        AND (\r\n          is_qa IS NULL\r\n          OR is_qa = FALSE\r\n        )\r\n      )\r\n      OR (\r\n        'Quality Assurance' IN ('Production')\r\n        AND is_qa = TRUE\r\n      )\r\n    )\r\n  GROUP BY\r\n    time\r\n)\r\nSELECT\r\n  date_time,\r\n  COALESCE(p90, 0) AS p90\r\nFROM\r\n  time_series\r\n  LEFT JOIN events_data ON DATE_BIN('5 min', date_time, '2000-1-1') = time\r\nWHERE\r\n  'p90' IN ('median','p90')\r\nORDER BY\r\n  date_time;",
+          "refId": "p90",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        "queryType": "",
+        "refId": "p90",
+        "relativeTimeRange": {
+          "from": 86400,
+          "to": 0
+        }
+      },
+      {
+        "datasourceUid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2",
+        "model": {
+          "datasource": {
+            "type": "postgres",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "intervalMs": 60000,
+          "maxDataPoints": 43200,
+          "rawQuery": true,
+          "rawSql": "WITH time_series AS (\n  SELECT\n    GENERATE_SERIES(\n      $__timeFrom() :: timestamp,\n      $__timeTo() :: timestamp,\n      '5 min' :: interval\n    ) AS date_time\n),\nevents_data AS (\n  SELECT\n    DATE_BIN('5 min', date_time, '2000-1-1') AS time,\n    COUNT(value) AS count\n  FROM\n    metrics.events\n  WHERE\n    event = 'saga_processing_time'\n    AND $__timeFilter(date_time)\n    AND org IN ('aerospheres','arla','danfoss','document_demo','emco','fritzschur','ga_demo','ga_review','gianlucas','goa_qa','goautonomous','gotestorg','grundfos','hempel','ifm','jde','kamstrup','kimbrer','klee','leki','leki_demo','mediq','ml','mom','momtex','nilfisk','rockwool','stark','test','topcast','tpaerospace','velux','wesco')\n    AND intent IN ('request_simple_order')\n    AND (\n      (\n        'Production' IN ('Production')\n        AND (\n          is_qa IS NULL\n          OR is_qa = FALSE\n        )\n      )\n      OR (\n        'Quality Assurance' IN ('Production')\n        AND is_qa = TRUE\n      )\n    )\n  GROUP BY\n    time\n)\nSELECT\n  date_time,\nCOALESCE(count, 0)AS count\nFROM\n  time_series\n  LEFT JOIN events_data ON DATE_BIN('5 min', date_time, '2000-1-1') = time\nWHERE\n  'median' IN ('median','p90')\nORDER BY\n  date_time;",
+          "refId": "count",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        "queryType": "",
+        "refId": "count",
+        "relativeTimeRange": {
+          "from": 86400,
+          "to": 0
+        }
+      },
+      {
+        "datasourceUid": "__expr__",
+        "model": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [],
+                "type": "gt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": [
+                  "A"
+                ]
+              },
+              "reducer": {
+                "params": [],
+                "type": "last"
+              },
+              "type": "query"
+            }
+          ],
+          "datasource": {
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "p90",
+          "intervalMs": 1000,
+          "maxDataPoints": 43200,
+          "reducer": "last",
+          "refId": "A",
+          "type": "reduce"
+        },
+        "queryType": "",
+        "refId": "A",
+        "relativeTimeRange": {
+          "from": 86400,
+          "to": 0
+        }
+      },
+      {
+        "datasourceUid": "__expr__",
+        "model": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [
+                  540,
+                  0
+                ],
+                "type": "gt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": [
+                  "p90"
+                ]
+              },
+              "reducer": {
+                "params": [],
+                "type": "last"
+              },
+              "type": "query"
+            },
+            {
+              "evaluator": {
+                "params": [
+                  10,
+                  0
+                ],
+                "type": "gt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": [
+                  "count"
+                ]
+              },
+              "reducer": {
+                "params": [],
+                "type": "last"
+              },
+              "type": "query"
+            }
+          ],
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "",
+          "hide": false,
+          "intervalMs": 1000,
+          "maxDataPoints": 43200,
+          "refId": "C",
+          "type": "classic_conditions"
+        },
+        "queryType": "",
+        "refId": "C",
+        "relativeTimeRange": {
+          "from": 600,
+          "to": 0
+        }
+      },
+      {
+        "datasourceUid": "__expr__",
+        "model": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [
+                  0,
+                  0
+                ],
+                "type": "gt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": []
+              },
+              "reducer": {
+                "params": [],
+                "type": "avg"
+              },
+              "type": "query"
+            }
+          ],
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "count",
+          "hide": false,
+          "intervalMs": 1000,
+          "maxDataPoints": 43200,
+          "reducer": "last",
+          "refId": "E",
+          "settings": {
+            "mode": "replaceNN",
+            "replaceWithValue": 0
+          },
+          "type": "reduce"
+        },
+        "queryType": "",
+        "refId": "E",
+        "relativeTimeRange": {
+          "from": 86400,
+          "to": 0
+        }
+      },
+      {
+        "datasourceUid": "__expr__",
+        "model": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [
+                  0,
+                  0
+                ],
+                "type": "gt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": []
+              },
+              "reducer": {
+                "params": [],
+                "type": "avg"
+              },
+              "type": "query"
+            }
+          ],
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "p90",
+          "hide": false,
+          "intervalMs": 1000,
+          "maxDataPoints": 43200,
+          "reducer": "last",
+          "refId": "F",
+          "settings": {
+            "mode": "replaceNN",
+            "replaceWithValue": 0
+          },
+          "type": "reduce"
+        },
+        "queryType": "",
+        "refId": "F",
+        "relativeTimeRange": {
+          "from": 86400,
+          "to": 0
+        }
+      }
+    ],
+    "execErrState": "Error",
+    "folderUID": "_Nh_ekbVz",
+    "for": "1m",
+    "isPaused": false,
+    "keep_firing_for": "0s",
+    "labels": {
+      "SLA": "True"
+    },
+    "noDataState": "NoData",
+    "notification_settings": null,
+    "orgID": 1,
+    "record": null,
+    "ruleGroup": "SLA",
+    "title": "P90 extraction time is above 9 minutes",
+    "uid": "e3293bcf-c430-4659-8486-4658b3cf66ab"
+  },
+  {
+    "annotations": {
+      "__dashboardUid__": "09635ae8-83ef-4cec-8828-9f22041e0a0d",
+      "__panelId__": "92"
+    },
+    "condition": "E",
+    "data": [
+      {
+        "datasourceUid": "c4b495c4-c353-4d08-885e-cf357376c4e4",
+        "model": {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "c4b495c4-c353-4d08-885e-cf357376c4e4"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes{namespace=~\".*\"}) /(min by (namespace, persistentvolumeclaim) (kubelet_volume_stats_available_bytes{namespace=~\".*\"}) + max by (namespace, persistentvolumeclaim) (kubelet_volume_stats_used_bytes{namespace=~\".*\"}))*100",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 1,
+          "intervalMs": 30000,
+          "legendFormat": "{{namespace}}:{{ persistentvolumeclaim }}",
+          "maxDataPoints": 43200,
+          "metric": "container_memory_usage:sort_desc",
+          "range": false,
+          "refId": "C",
+          "step": 10
+        },
+        "queryType": "",
+        "refId": "C",
+        "relativeTimeRange": {
+          "from": 1800,
+          "to": 0
+        }
+      },
+      {
+        "datasourceUid": "__expr__",
+        "model": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [
+                  75
+                ],
+                "type": "gt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": []
+              },
+              "reducer": {
+                "params": [],
+                "type": "last"
+              },
+              "type": "query"
+            }
+          ],
+          "datasource": {
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "C",
+          "intervalMs": 1000,
+          "maxDataPoints": 43200,
+          "refId": "E",
+          "type": "threshold"
+        },
+        "queryType": "",
+        "refId": "E",
+        "relativeTimeRange": {
+          "from": 0,
+          "to": 0
+        }
+      }
+    ],
+    "execErrState": "Error",
+    "folderUID": "cfhr9osoxuzgge",
+    "for": "1m",
+    "isPaused": false,
+    "keep_firing_for": "0s",
+    "noDataState": "KeepLast",
+    "notification_settings": {
+      "receiver": "Slack-ml-alerts"
+    },
+    "orgID": 1,
+    "record": null,
+    "ruleGroup": "Incident monitoring",
+    "title": "PVC Storage Usage",
+    "uid": "ffpigwxlzyn0gb"
+  },
+  {
+    "annotations": {
+      "__dashboardUid__": "af1f738f-ff26-4575-9d32-85df912d0c67",
+      "__panelId__": "25",
+      "description": "This could indicate either:\n- Increased number of mails received\n- Slowdown of the processing\n\nInvestigate the response times of the processing services.",
+      "summary": "The size of \"Extraction\" + \"Classification\" Hangfire queues is about the threshold."
+    },
+    "condition": "B",
+    "data": [
+      {
+        "datasourceUid": "fbde1235-be05-4f72-94a6-06a67f9648dc",
+        "model": {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "fbde1235-be05-4f72-94a6-06a67f9648dc"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "instant": false,
+          "intervalMs": 60000,
+          "maxDataPoints": 43200,
+          "range": true,
+          "rawQuery": true,
+          "rawSql": "\nselect sum(latest.queue_size) as total_queue_size\nfrom (\n    select distinct on (queue_name)\n        queue_name,\n        queue_size\n    from platform.queue_status\n    where queue_name in ('extraction', 'classification')\n    order by queue_name, measured_at desc\n) as latest;",
+          "refId": "QueueSize",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        "queryType": "",
+        "refId": "QueueSize",
+        "relativeTimeRange": {
+          "from": 3600,
+          "to": 0
+        }
+      },
+      {
+        "datasourceUid": "__expr__",
+        "model": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [
+                  1000,
+                  0
+                ],
+                "type": "gt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": []
+              },
+              "reducer": {
+                "params": [],
+                "type": "avg"
+              },
+              "type": "query"
+            }
+          ],
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "QueueSize",
+          "intervalMs": 1000,
+          "maxDataPoints": 43200,
+          "refId": "B",
+          "type": "threshold"
+        },
+        "queryType": "",
+        "refId": "B",
+        "relativeTimeRange": {
+          "from": 0,
+          "to": 0
+        }
+      }
+    ],
+    "execErrState": "Error",
+    "folderUID": "efphs0qcbckxsc",
+    "for": "0s",
+    "isPaused": false,
+    "keep_firing_for": "0s",
+    "noDataState": "KeepLast",
+    "notification_settings": {
+      "receiver": "Slack Warnings"
+    },
+    "orgID": 1,
+    "record": null,
+    "ruleGroup": "10Minutes",
+    "title": "Queue size",
+    "uid": "efphscuv7jqioa"
+  },
+  {
+    "condition": "C",
+    "data": [
+      {
+        "datasourceUid": "c4b495c4-c353-4d08-885e-cf357376c4e4",
+        "model": {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "c4b495c4-c353-4d08-885e-cf357376c4e4"
+          },
+          "editorMode": "code",
+          "expr": "max by (namespace, pod) (\n  increase(kube_pod_container_status_restarts_total[15m])\n) >= 1",
+          "instant": true,
+          "intervalMs": 1000,
+          "legendFormat": "__auto",
+          "maxDataPoints": 43200,
+          "range": false,
+          "refId": "A"
+        },
+        "queryType": "",
+        "refId": "A",
+        "relativeTimeRange": {
+          "from": 600,
+          "to": 0
+        }
+      },
+      {
+        "datasourceUid": "__expr__",
+        "model": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [
+                  3
+                ],
+                "type": "gt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": []
+              },
+              "reducer": {
+                "params": [],
+                "type": "last"
+              },
+              "type": "query"
+            }
+          ],
+          "datasource": {
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "A",
+          "intervalMs": 1000,
+          "maxDataPoints": 43200,
+          "refId": "C",
+          "type": "threshold"
+        },
+        "queryType": "",
+        "refId": "C",
+        "relativeTimeRange": {
+          "from": 0,
+          "to": 0
+        }
+      }
+    ],
+    "execErrState": "Error",
+    "folderUID": "cfhr9osoxuzgge",
+    "for": "5m",
+    "isPaused": false,
+    "keep_firing_for": "0s",
+    "noDataState": "OK",
+    "notification_settings": {
+      "receiver": "Slack-ml-alerts"
+    },
+    "orgID": 1,
+    "record": null,
+    "ruleGroup": "Incident monitoring",
+    "title": "Restarting pods",
+    "uid": "afqs978ba2v40a"
+  },
+  {
+    "annotations": {
+      "__dashboardUid__": "51da3d65-5aff-4255-aef4-c0655c30314a",
+      "__panelId__": "2"
+    },
+    "condition": "A",
+    "data": [
+      {
+        "datasourceUid": "P1809F7CD0C75ACF3",
+        "model": {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "P1809F7CD0C75ACF3"
+          },
+          "editorMode": "code",
+          "expr": "sum by (namespace, pod, reason) (\n  kube_pod_container_status_waiting_reason{reason!~\"ContainerCreating|PodInitializing\"}\n) > 0",
+          "format": "time_series",
+          "instant": true,
+          "interval": "1s",
+          "intervalFactor": 1,
+          "intervalMs": 30000,
+          "legendFormat": "__auto",
+          "maxDataPoints": 43200,
+          "range": false,
+          "refId": "A"
+        },
+        "queryType": "",
+        "refId": "A",
+        "relativeTimeRange": {
+          "from": 10800,
+          "to": 0
+        }
+      }
+    ],
+    "execErrState": "Error",
+    "folderUID": "cfhr9osoxuzgge",
+    "for": "3m",
+    "isPaused": false,
+    "keep_firing_for": "0s",
+    "noDataState": "OK",
+    "notification_settings": {
+      "receiver": "Slack-ml-alerts"
+    },
+    "orgID": 1,
+    "record": null,
+    "ruleGroup": "Incident monitoring",
+    "title": "Unhealthy Pods",
+    "uid": "efpih53btn4lcd"
+  },
+  {
+    "annotations": {
+      "__dashboardUid__": "09635ae8-83ef-4cec-8828-9f22041e0a0d",
+      "__panelId__": "93"
+    },
+    "condition": "B",
+    "data": [
+      {
+        "datasourceUid": "c4b495c4-c353-4d08-885e-cf357376c4e4",
+        "model": {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "c4b495c4-c353-4d08-885e-cf357376c4e4"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "(kube_deployment_spec_replicas > 0)\nunless on(namespace, deployment)\ncount by (namespace, deployment) (\n  label_replace(\n    (kube_pod_status_phase{phase=\"Running\"} == 1)\n      * on(namespace, pod) group_left(owner_name)\n      max by (namespace, pod, owner_name) (kube_pod_owner{owner_kind=\"ReplicaSet\"}),\n    \"deployment\", \"$1\", \"owner_name\", \"^(.*)-[a-z0-9]+$\"\n  )\n)",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "intervalMs": 30000,
+          "legendFormat": "",
+          "maxDataPoints": 43200,
+          "range": false,
+          "refId": "A"
+        },
+        "queryType": "",
+        "refId": "A",
+        "relativeTimeRange": {
+          "from": 1800,
+          "to": 0
+        }
+      },
+      {
+        "datasourceUid": "__expr__",
+        "model": {
+          "conditions": [
+            {
+              "evaluator": {
+                "params": [
+                  0
+                ],
+                "type": "gt"
+              },
+              "operator": {
+                "type": "and"
+              },
+              "query": {
+                "params": []
+              },
+              "reducer": {
+                "params": [],
+                "type": "avg"
+              },
+              "type": "query"
+            }
+          ],
+          "datasource": {
+            "name": "Expression",
+            "type": "__expr__",
+            "uid": "__expr__"
+          },
+          "expression": "A",
+          "intervalMs": 1000,
+          "maxDataPoints": 43200,
+          "refId": "B",
+          "type": "threshold"
+        },
+        "queryType": "",
+        "refId": "B",
+        "relativeTimeRange": {
+          "from": 0,
+          "to": 0
+        }
+      }
+    ],
+    "execErrState": "Error",
+    "folderUID": "cfhr9osoxuzgge",
+    "for": "10m",
+    "isPaused": false,
+    "keep_firing_for": "0s",
+    "noDataState": "OK",
+    "notification_settings": {
+      "receiver": "Slack-ml-alerts"
+    },
+    "orgID": 1,
+    "record": null,
+    "ruleGroup": "Incident monitoring",
+    "title": "Zero Pods for Deployment",
+    "uid": "efpihd6m1dtkwa"
+  }
+]

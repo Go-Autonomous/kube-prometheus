@@ -1,0 +1,3675 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "We commit to delivering our services as fast as possible to our customers and as a minimum within 10 minutes for extractions for 90% of all requests that are less than 10 pages and classify intent faster than 5 minutes for all of our services.\n\nFor us to better know if we do this we need a dashboard that can help us monitor this.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [
+        "namespace"
+      ],
+      "targetBlank": false,
+      "title": "Namespaces",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    },
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [
+        "service"
+      ],
+      "targetBlank": false,
+      "title": "Services",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
+  "panels": [
+    {
+      "datasource": {
+        "type": "stackdriver",
+        "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+      },
+      "description": "Tracks the mails received",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "displayName": "$org",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 19,
+        "x": 0,
+        "y": 0
+      },
+      "id": 37,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "stackdriver",
+            "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+          },
+          "promQLQuery": {
+            "expr": "# Just total\nsum (rate({\"__name__\"=\"mail_received_count_total\", \"org_id\"=~\"$org\"}[${__interval}]))\n",
+            "projectName": "api-prod-goauto-1",
+            "step": "10s"
+          },
+          "queryType": "promQL",
+          "refId": "Mails received/s",
+          "timeSeriesQuery": {
+            "projectName": "api-prod-goauto-1",
+            "query": "sum by (\"org_id\")(rate({\"__name__\"=\"mail_received_count_total\"}[${__interval}]))\n#This PromQL query was automatically converted from a builder query, and it may not be fully equivalent to the builder query. Manually verify the PromQL query before using it and edit as needed."
+          }
+        }
+      ],
+      "title": "Mails received",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 10,
+      "panels": [],
+      "title": "Processing time",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 5,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "p99"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "mean"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "median"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "p80"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "p90"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "p95"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 19,
+        "x": 0,
+        "y": 9
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH time_series AS (\r\n  SELECT\r\n    GENERATE_SERIES(\r\n      $__timeFrom() :: timestamp,\r\n      $__timeTo() :: timestamp,\r\n      '$time_interval' :: interval\r\n    ) AS date_time\r\n),\r\nevents_data AS (\r\n  SELECT\r\n    DATE_BIN('$time_interval', date_time, '2000-1-1') AS time,\r\n    AVG(CAST(value AS DECIMAL(10, 3))) AS mean\r\n  FROM\r\n    metrics.events\r\n  WHERE\r\n    event = 'saga_processing_time'\r\n    AND $__timeFilter(date_time)\r\n    AND org IN ($org)\r\n    AND intent IN ($intent)\r\n    AND (\r\n      (\r\n        'Production' IN ('${env:csv}')\r\n        AND (\r\n          is_qa IS NULL\r\n          OR is_qa = FALSE\r\n        )\r\n      )\r\n      OR (\r\n        'Quality Assurance' IN ('${env:csv}')\r\n        AND is_qa = TRUE\r\n      )\r\n    )\r\n  GROUP BY\r\n    time\r\n)\r\nSELECT\r\n  date_time,\r\n  COALESCE(mean, 0) AS mean\r\nFROM\r\n  time_series\r\n  LEFT JOIN events_data ON DATE_BIN('$time_interval', date_time, '2000-1-1') = time\r\nWHERE\r\n  'mean' IN ($metric)\r\nORDER BY\r\n  date_time;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH time_series AS (\r\n  SELECT\r\n    GENERATE_SERIES(\r\n      $__timeFrom() :: timestamp,\r\n      $__timeTo() :: timestamp,\r\n      '$time_interval' :: interval\r\n    ) AS date_time\r\n),\r\nevents_data AS (\r\n  SELECT\r\n    DATE_BIN('$time_interval', date_time, '2000-1-1') AS time,\r\n    PERCENTILE_CONT(0.5) WITHIN GROUP (\r\n      ORDER BY\r\n        CAST(value AS DECIMAL(10, 3))\r\n    ) AS median\r\n  FROM\r\n    metrics.events\r\n  WHERE\r\n    event = 'saga_processing_time'\r\n    AND $__timeFilter(date_time)\r\n    AND org IN ($org)\r\n    AND intent IN ($intent)\r\n    AND (\r\n      (\r\n        'Production' IN ('${env:csv}')\r\n        AND (\r\n          is_qa IS NULL\r\n          OR is_qa = FALSE\r\n        )\r\n      )\r\n      OR (\r\n        'Quality Assurance' IN ('${env:csv}')\r\n        AND is_qa = TRUE\r\n      )\r\n    )\r\n  GROUP BY\r\n    time\r\n)\r\nSELECT\r\n  date_time,\r\n  COALESCE(median, 0) AS median\r\nFROM\r\n  time_series\r\n  LEFT JOIN events_data ON DATE_BIN('$time_interval', date_time, '2000-1-1') = time\r\nWHERE\r\n  'median' IN ($metric)\r\nORDER BY\r\n  date_time;",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH time_series AS (\r\n  SELECT\r\n    GENERATE_SERIES(\r\n      $__timeFrom() :: timestamp,\r\n      $__timeTo() :: timestamp,\r\n      '$time_interval' :: interval\r\n    ) AS date_time\r\n),\r\nevents_data AS (\r\n  SELECT\r\n    DATE_BIN('$time_interval', date_time, '2000-1-1') AS time,\r\n    PERCENTILE_CONT(0.8) WITHIN GROUP (\r\n      ORDER BY\r\n        CAST(value AS DECIMAL(10, 3))\r\n    ) AS p80\r\n  FROM\r\n    metrics.events\r\n  WHERE\r\n    event = 'saga_processing_time'\r\n    AND $__timeFilter(date_time)\r\n    AND org IN ($org)\r\n    AND intent IN ($intent)\r\n    AND (\r\n      (\r\n        'Production' IN ('${env:csv}')\r\n        AND (\r\n          is_qa IS NULL\r\n          OR is_qa = FALSE\r\n        )\r\n      )\r\n      OR (\r\n        'Quality Assurance' IN ('${env:csv}')\r\n        AND is_qa = TRUE\r\n      )\r\n    )\r\n  GROUP BY\r\n    time\r\n)\r\nSELECT\r\n  date_time,\r\n  COALESCE(p80, 0) AS p80\r\nFROM\r\n  time_series\r\n  LEFT JOIN events_data ON DATE_BIN('$time_interval', date_time, '2000-1-1') = time\r\nWHERE\r\n  'p80' IN ($metric)\r\nORDER BY\r\n  date_time;",
+          "refId": "C",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH time_series AS (\r\n  SELECT\r\n    GENERATE_SERIES(\r\n      $__timeFrom() :: timestamp,\r\n      $__timeTo() :: timestamp,\r\n      '$time_interval' :: interval\r\n    ) AS date_time\r\n),\r\nevents_data AS (\r\n  SELECT\r\n    DATE_BIN('$time_interval', date_time, '2000-1-1') AS time,\r\n    PERCENTILE_CONT(0.9) WITHIN GROUP (\r\n      ORDER BY\r\n        CAST(value AS DECIMAL(10, 3))\r\n    ) AS p90\r\n  FROM\r\n    metrics.events\r\n  WHERE\r\n    event = 'saga_processing_time'\r\n    AND $__timeFilter(date_time)\r\n    AND org IN ($org)\r\n    AND intent IN ($intent)\r\n    AND (\r\n      (\r\n        'Production' IN ('${env:csv}')\r\n        AND (\r\n          is_qa IS NULL\r\n          OR is_qa = FALSE\r\n        )\r\n      )\r\n      OR (\r\n        'Quality Assurance' IN ('${env:csv}')\r\n        AND is_qa = TRUE\r\n      )\r\n    )\r\n  GROUP BY\r\n    time\r\n)\r\nSELECT\r\n  date_time,\r\n  COALESCE(p90, 0) AS p90\r\nFROM\r\n  time_series\r\n  LEFT JOIN events_data ON DATE_BIN('$time_interval', date_time, '2000-1-1') = time\r\nWHERE\r\n  'p90' IN ($metric)\r\nORDER BY\r\n  date_time;",
+          "refId": "D",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH time_series AS (\r\n  SELECT\r\n    GENERATE_SERIES(\r\n      $__timeFrom() :: timestamp,\r\n      $__timeTo() :: timestamp,\r\n      '$time_interval' :: interval\r\n    ) AS date_time\r\n),\r\nevents_data AS (\r\n  SELECT\r\n    DATE_BIN('$time_interval', date_time, '2000-1-1') AS time,\r\n    PERCENTILE_CONT(0.95) WITHIN GROUP (\r\n      ORDER BY\r\n        CAST(value AS DECIMAL(10, 3))\r\n    ) AS p95\r\n  FROM\r\n    metrics.events\r\n  WHERE\r\n    event = 'saga_processing_time'\r\n    AND $__timeFilter(date_time)\r\n    AND org IN ($org)\r\n    AND intent IN ($intent)\r\n    AND (\r\n      (\r\n        'Production' IN ('${env:csv}')\r\n        AND (\r\n          is_qa IS NULL\r\n          OR is_qa = FALSE\r\n        )\r\n      )\r\n      OR (\r\n        'Quality Assurance' IN ('${env:csv}')\r\n        AND is_qa = TRUE\r\n      )\r\n    )\r\n  GROUP BY\r\n    time\r\n)\r\nSELECT\r\n  date_time,\r\n  COALESCE(p95, 0) AS p95\r\nFROM\r\n  time_series\r\n  LEFT JOIN events_data ON DATE_BIN('$time_interval', date_time, '2000-1-1') = time\r\nWHERE\r\n  'p95' IN ($metric)\r\nORDER BY\r\n  date_time;",
+          "refId": "E",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH time_series AS (\r\n  SELECT\r\n    GENERATE_SERIES(\r\n      $__timeFrom() :: timestamp,\r\n      $__timeTo() :: timestamp,\r\n      '$time_interval' :: interval\r\n    ) AS date_time\r\n),\r\nevents_data AS (\r\n  SELECT\r\n    DATE_BIN('$time_interval', date_time, '2000-1-1') AS time,\r\n    PERCENTILE_CONT(0.99) WITHIN GROUP (\r\n      ORDER BY\r\n        CAST(value AS DECIMAL(10, 3))\r\n    ) AS p99\r\n  FROM\r\n    metrics.events\r\n  WHERE\r\n    event = 'saga_processing_time'\r\n    AND $__timeFilter(date_time)\r\n    AND org IN ($org)\r\n    AND intent IN ($intent)\r\n    AND (\r\n      (\r\n        'Production' IN ('${env:csv}')\r\n        AND (\r\n          is_qa IS NULL\r\n          OR is_qa = FALSE\r\n        )\r\n      )\r\n      OR (\r\n        'Quality Assurance' IN ('${env:csv}')\r\n        AND is_qa = TRUE\r\n      )\r\n    )\r\n  GROUP BY\r\n    time\r\n)\r\nSELECT\r\n  date_time,\r\n  COALESCE(p99, 0) AS p99\r\nFROM\r\n  time_series\r\n  LEFT JOIN events_data ON DATE_BIN('$time_interval', date_time, '2000-1-1') = time\r\nWHERE\r\n  'p99' IN ($metric)\r\nORDER BY\r\n  date_time;",
+          "refId": "F",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "aliasBy": "Orchestrator",
+          "datasource": {
+            "type": "stackdriver",
+            "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+          },
+          "queryType": "timeSeriesQuery",
+          "refId": "G",
+          "timeSeriesQuery": {
+            "graphPeriod": "$time_interval",
+            "projectName": "api-prod-goauto-1",
+            "query": "fetch prometheus_target\n| metric 'prometheus.googleapis.com/extraction_duration_milliseconds/histogram'\n| align delta(1m)\n| every 1m\n| group_by [],\n    [value_extraction_duration_milliseconds_mean:\n       mean(value.extraction_duration_milliseconds) / 1000]"
+          }
+        }
+      ],
+      "title": "Saga mail extraction timing",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Extraction duration (platform)",
+            "binary": {
+              "left": {
+                "matcher": {
+                  "id": "byName",
+                  "options": "value_classification_duration_milliseconds_mean"
+                }
+              },
+              "operator": "/",
+              "right": {
+                "fixed": "1000"
+              }
+            },
+            "mode": "binary",
+            "reduce": {
+              "include": [
+                "value_classification_duration_milliseconds_mean"
+              ],
+              "reducer": "sum"
+            },
+            "replaceFields": false
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 5,
+        "x": 19,
+        "y": 9
+      },
+      "id": 13,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  AVG(CAST(value AS DECIMAL(10, 3))) AS \"mean\",\n  PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY CAST(value AS DECIMAL(10, 3))) AS \"median\",\n  PERCENTILE_CONT(0.90) WITHIN GROUP (ORDER BY CAST(value AS DECIMAL(10, 3))) AS \"p90\",\n  PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY CAST(value AS DECIMAL(10, 3))) AS \"p95\",\n  PERCENTILE_CONT(0.99) WITHIN GROUP (ORDER BY CAST(value AS DECIMAL(10, 3))) AS \"p99\"\nFROM\n  metrics.events\nWHERE\n  event = 'saga_processing_time'\n  AND $__timeFilter(date_time)\n  AND org IN ($org)\n  AND intent IN ($intent)\n  AND (\n    ('Production' IN ('${env:csv}') AND (is_qa IS NULL OR is_qa = FALSE))\n    OR ('Quality Assurance' IN ('${env:csv}') AND is_qa = TRUE)\n  );",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Mail extraction timings",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "byVariable": true,
+            "include": {
+              "variable": "$metric"
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "stackdriver",
+        "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 19,
+        "y": 16
+      },
+      "id": 17,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "stackdriver",
+            "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+          },
+          "queryType": "timeSeriesList",
+          "refId": "A",
+          "timeSeriesList": {
+            "alignmentPeriod": "cloud-monitoring-auto",
+            "crossSeriesReducer": "REDUCE_SUM",
+            "filters": [
+              "metric.type",
+              "=",
+              "prometheus.googleapis.com/processing_started_count_total/counter"
+            ],
+            "groupBys": [],
+            "perSeriesAligner": "ALIGN_NONE",
+            "preprocessor": "rate",
+            "projectName": "api-prod-goauto-1",
+            "view": "FULL"
+          }
+        }
+      ],
+      "title": "Mails in processing per second",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 5,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "p99"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "mean"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "median"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "p80"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "p90"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "p95"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 19,
+        "x": 0,
+        "y": 19
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH time_series AS (\r\n  SELECT\r\n    GENERATE_SERIES(\r\n      $__timeFrom(),\r\n      $__timeTo(),\r\n      '$time_interval'::interval\r\n    ) AS dt\r\n),\r\nevents_data AS (\r\n  SELECT\r\n    DATE_BIN('$time_interval', date_time, '1970-01-01Z'::timestamptz) AS time,\r\n    COUNT(value) AS count\r\n  FROM\r\n    metrics.events\r\n  WHERE\r\n    event = 'saga_processing_time'\r\n    AND $__timeFilter(date_time)\r\n    AND org IN ($org)\r\n    AND intent IN ($intent)\r\n    AND (\r\n      ('Production' IN ('${env:csv}') AND (is_qa IS NULL OR is_qa = FALSE))\r\n      OR ('Quality Assurance' IN ('${env:csv}') AND is_qa = TRUE)\r\n    )\r\n  GROUP BY time\r\n)\r\nSELECT\r\n  dt AS \"time\",\r\n  COALESCE(ed.count, 0) AS \"ML logs\"\r\nFROM\r\n  time_series ts\r\n  LEFT JOIN events_data ed ON DATE_BIN('$time_interval', ts.dt, '1970-01-01Z'::timestamptz) = ed.time\r\nORDER BY 1;",
+          "refId": "ML Metrics",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "fbde1235-be05-4f72-94a6-06a67f9648dc"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": true,
+          "rawQuery": true,
+          "rawSql": "WITH time_series AS (\n  SELECT\n    GENERATE_SERIES(\n      $__timeFrom(),\n      $__timeTo(),\n      '$time_interval'::interval\n    ) AS dt\n),\nevents_data AS (\n  SELECT\n    DATE_BIN('$time_interval', sent_at, '1970-01-01Z'::timestamptz) AS time,\n    COUNT(mail_envelope_id) AS count\n  FROM\n    bc.mail_envelope\n  WHERE\n    $__timeFilter(sent_at)\n    AND org_id IN ($org)\n    AND saga_classification IN ($intent)\n  GROUP BY time\n)\nSELECT\n  dt AS \"time\",\n  COALESCE(ed.count, 0) AS \"Platform logs\"\nFROM\n  time_series ts\n  LEFT JOIN events_data ed ON DATE_BIN('$time_interval', ts.dt, '1970-01-01Z'::timestamptz) = ed.time\nORDER BY 1;",
+          "refId": "Platform mail_envelope",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "aliasBy": "GCP prometheus",
+          "datasource": {
+            "type": "stackdriver",
+            "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+          },
+          "queryType": "timeSeriesQuery",
+          "refId": "A",
+          "timeSeriesQuery": {
+            "graphPeriod": "$time_interval",
+            "projectName": "api-prod-goauto-1",
+            "query": "fetch prometheus_target\n| metric 'prometheus.googleapis.com/processing_completed_count_total/counter'\n| align delta(1m)\n| every 1m\n| group_by [],\n    [value_processing_completed_count_total_aggregate:\n       aggregate(value.processing_completed_count_total)]"
+          }
+        }
+      ],
+      "title": "Processed",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 5,
+        "x": 19,
+        "y": 21
+      },
+      "id": 12,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": true
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 25
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "fbde1235-be05-4f72-94a6-06a67f9648dc"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  COUNT(*) AS \"Platform Total\"\nFROM\n  bc.mail_envelope\nWHERE\n  $__timeFilter(sent_at)\n  AND org_id IN ($org)\n  AND saga_classification IN ($intent);",
+          "refId": "Total Platform",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "fbde1235-be05-4f72-94a6-06a67f9648dc"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  bucket_count || ' @ ' || \n  TO_CHAR(time AT TIME ZONE 'Europe/Copenhagen', 'HH24:MI') || '-' || \n  TO_CHAR((time + '$time_interval'::interval) AT TIME ZONE 'Europe/Copenhagen', 'HH24:MI') AS \"Platform Peak\"\nFROM (\n  SELECT\n    DATE_BIN('$time_interval'::interval, sent_at, '1970-01-01'::timestamp) AS time,\n    COUNT(*) AS bucket_count\n  FROM\n    bc.mail_envelope\n  WHERE\n    $__timeFilter(sent_at)\n    AND org_id IN ($org)\n    AND saga_classification IN ($intent)\n  GROUP BY time\n  ORDER BY bucket_count DESC, time ASC\n  LIMIT 1\n) AS subquery;",
+          "refId": "Peak Window Platform",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  COUNT(*) AS \"ML Total\"\nFROM\n  metrics.events\nWHERE\n  event = 'saga_processing_time'\n  AND $__timeFilter(date_time)\n  AND org IN ($org)\n  AND intent IN ($intent)\n  AND (\n    ('Production' IN ('${env:csv}') AND (is_qa IS NULL OR is_qa = FALSE))\n    OR ('Quality Assurance' IN ('${env:csv}') AND is_qa = TRUE)\n  );",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  bucket_count || ' @ ' || \n  TO_CHAR(time AT TIME ZONE 'Europe/Copenhagen', 'HH24:MI') || '-' || \n  TO_CHAR((time + '$time_interval'::interval) AT TIME ZONE 'Europe/Copenhagen', 'HH24:MI') AS \"ML Peak\"\nFROM (\n  SELECT\n    DATE_BIN('$time_interval'::interval, date_time, '1970-01-01'::timestamp) AS time,\n    COUNT(*) AS bucket_count\n  FROM\n    metrics.events\n  WHERE\n    event = 'saga_processing_time'\n    AND $__timeFilter(date_time)\n    AND org IN ($org)\n    AND intent IN ($intent)\n    AND (\n      ('Production' IN ('${env:csv}') AND (is_qa IS NULL OR is_qa = FALSE))\n      OR ('Quality Assurance' IN ('${env:csv}') AND is_qa = TRUE)\n    )\n  GROUP BY time\n  ORDER BY bucket_count DESC, time ASC\n  LIMIT 1\n) AS subquery;",
+          "refId": "B",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Totals and Peaks",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "stackdriver",
+        "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 19,
+        "x": 0,
+        "y": 29
+      },
+      "id": 20,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "stackdriver",
+            "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+          },
+          "queryType": "timeSeriesQuery",
+          "refId": "A",
+          "timeSeriesQuery": {
+            "graphPeriod": "$time_interval",
+            "projectName": "api-prod-goauto-1",
+            "query": "fetch prometheus_target\n| metric\n    'prometheus.googleapis.com/classification_duration_milliseconds/histogram'\n| align delta(1m)\n| every 1m\n| group_by [],\n    [AvgDuration:\n       mean(value.classification_duration_milliseconds)]"
+          }
+        }
+      ],
+      "title": "Classification duration (Orchestrator)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "efhofau5tm134f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 19,
+        "y": 31
+      },
+      "id": 26,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "columns": [],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "efhofau5tm134f"
+          },
+          "filters": [],
+          "format": "table",
+          "global_query_id": "",
+          "parser": "jq-backend",
+          "refId": "A",
+          "root_selector": ".[] | \n  { \"Name\": .name, \"Processing\": .fetched }",
+          "source": "url",
+          "type": "json",
+          "url": "/v1/hangfire/queues",
+          "url_options": {
+            "data": "",
+            "method": "GET"
+          }
+        }
+      ],
+      "title": "Queue size",
+      "transformations": [
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "Processing"
+              }
+            ]
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Name"
+            ],
+            "keepFields": false
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 37
+      },
+      "id": 27,
+      "panels": [],
+      "title": "Queue size",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "fbde1235-be05-4f72-94a6-06a67f9648dc"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 19,
+        "x": 0,
+        "y": 38
+      },
+      "id": 25,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "fbde1235-be05-4f72-94a6-06a67f9648dc"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "select queue_name, queue_size, measured_at\nfrom platform.queue_status qs \norder by measured_at desc\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Queue size",
+      "transformations": [
+        {
+          "id": "groupBy",
+          "options": {
+            "fields": {
+              "measured_at": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "queue_name": {
+                "aggregations": [],
+                "operation": "groupby"
+              },
+              "queue_size": {
+                "aggregations": [
+                  "sum"
+                ],
+                "operation": "aggregate"
+              }
+            }
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "queue_name"
+            ],
+            "keepFields": false
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "efhofau5tm134f"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 5,
+        "x": 19,
+        "y": 38
+      },
+      "id": 28,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "columns": [],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "efhofau5tm134f"
+          },
+          "filters": [],
+          "format": "table",
+          "global_query_id": "",
+          "parser": "jq-backend",
+          "refId": "A",
+          "root_selector": ".[] | \n  { \"Name\": .name, \"Queued\": .length }",
+          "source": "url",
+          "type": "json",
+          "url": "/v1/hangfire/queues",
+          "url_options": {
+            "data": "",
+            "method": "GET"
+          }
+        }
+      ],
+      "title": "Queue size",
+      "transformations": [
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "Queued"
+              }
+            ]
+          }
+        },
+        {
+          "id": "partitionByValues",
+          "options": {
+            "fields": [
+              "Name"
+            ],
+            "keepFields": false
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 45
+      },
+      "id": 11,
+      "panels": [],
+      "title": "Error rates and slowdowns",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "below"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#73BF69",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    0,
+                    10
+                  ],
+                  "fill": "dot"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "over"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 19,
+        "x": 0,
+        "y": 46
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  $__timeGroupAlias(date_time, $__interval),\r\n  count(*) AS below\r\nFROM\r\n  metrics.events\r\nWHERE\r\n  event = 'saga_processing_time'\r\n  AND $__timeFilter(date_time)\r\n  AND org IN ($org)\r\n  AND intent IN ($intent)\r\n  AND (\r\n    (\r\n      'Production' IN ('${env:csv}')\r\n      AND (\r\n        is_qa IS NULL\r\n        OR is_qa = FALSE\r\n      )\r\n    )\r\n    OR (\r\n      'Quality Assurance' IN ('${env:csv}')\r\n      AND is_qa = TRUE\r\n    )\r\n  )\r\n  AND CAST(value AS DECIMAL(10, 3)) < EXTRACT(\r\n    epoch\r\n    FROM\r\n      INTERVAL '$threshold'\r\n  )\r\nGROUP BY 1\r\nORDER BY 1;",
+          "refId": "Below",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\r\n  $__timeGroupAlias(date_time, $__interval),\r\n  count(*) AS over\r\nFROM\r\n  metrics.events\r\nWHERE\r\n  event = 'saga_processing_time'\r\n  AND $__timeFilter(date_time)\r\n  AND org IN ($org)\r\n  AND intent IN ($intent)\r\n  AND (\r\n    (\r\n      'Production' IN ('${env:csv}')\r\n      AND (\r\n        is_qa IS NULL\r\n        OR is_qa = FALSE\r\n      )\r\n    )\r\n    OR (\r\n      'Quality Assurance' IN ('${env:csv}')\r\n      AND is_qa = TRUE\r\n    )\r\n  )\r\n  AND CAST(value AS DECIMAL(10, 3)) > EXTRACT(\r\n    epoch\r\n    FROM\r\n      INTERVAL '$threshold'\r\n  )\r\nGROUP BY 1\r\nORDER BY 1;",
+          "refId": "Over",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Requests exceeding threshold",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "total"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "median"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "p80"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "p90"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "p95"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "p99"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "shades"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 5,
+        "x": 19,
+        "y": 46
+      },
+      "id": 6,
+      "options": {
+        "displayMode": "basic",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 12,
+        "minVizWidth": 0,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH time_series AS (\r\n  SELECT\r\n    GENERATE_SERIES(\r\n      $__timeFrom() :: timestamp,\r\n      $__timeTo() :: timestamp,\r\n      '$time_interval' :: interval\r\n    ) AS date_time\r\n),\r\nevents_data AS (\r\n  SELECT\r\n    DATE_BIN('$time_interval', date_time, '2000-1-1') AS time,\r\n    PERCENTILE_CONT(0.50) WITHIN GROUP (\r\n      ORDER BY\r\n        CAST(value AS DECIMAL(10, 3))\r\n    ) AS median\r\n  FROM\r\n    metrics.events\r\n  WHERE\r\n    event = 'saga_processing_time'\r\n    AND $__timeFilter(date_time)\r\n    AND org IN ($org)\r\n    AND intent IN ($intent)\r\n    AND (\r\n      (\r\n        'Production' IN ('${env:csv}')\r\n        AND (\r\n          is_qa IS NULL\r\n          OR is_qa = FALSE\r\n        )\r\n      )\r\n      OR (\r\n        'Quality Assurance' IN ('${env:csv}')\r\n        AND is_qa = TRUE\r\n      )\r\n    )\r\n  GROUP BY\r\n    time\r\n),\r\ncount_result AS (\r\n  SELECT\r\n    COUNT(*) AS median\r\n  FROM\r\n    time_series\r\n    LEFT JOIN events_data ON DATE_BIN('$time_interval', date_time, '2000-1-1') = time\r\n  WHERE\r\n    median > EXTRACT(\r\n      epoch\r\n      FROM\r\n        INTERVAL '$threshold'\r\n    )\r\n)\r\nSELECT\r\n  median\r\nFROM\r\n  count_result\r\nWHERE\r\n  'median' IN ($metric);",
+          "refId": "Median",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH time_series AS (\r\n  SELECT\r\n    GENERATE_SERIES(\r\n      $__timeFrom() :: timestamp,\r\n      $__timeTo() :: timestamp,\r\n      '$time_interval' :: interval\r\n    ) AS date_time\r\n),\r\nevents_data AS (\r\n  SELECT\r\n    DATE_BIN('$time_interval', date_time, '2000-1-1') AS time,\r\n    PERCENTILE_CONT(0.80) WITHIN GROUP (\r\n      ORDER BY\r\n        CAST(value AS DECIMAL(10, 3))\r\n    ) AS p80\r\n  FROM\r\n    metrics.events\r\n  WHERE\r\n    event = 'saga_processing_time'\r\n    AND $__timeFilter(date_time)\r\n    AND org IN ($org)\r\n    AND intent IN ($intent)\r\n    AND (\r\n      (\r\n        'Production' IN ('${env:csv}')\r\n        AND (\r\n          is_qa IS NULL\r\n          OR is_qa = FALSE\r\n        )\r\n      )\r\n      OR (\r\n        'Quality Assurance' IN ('${env:csv}')\r\n        AND is_qa = TRUE\r\n      )\r\n    )\r\n  GROUP BY\r\n    time\r\n),\r\ncount_result AS (\r\n  SELECT\r\n    COUNT(*) AS p80\r\n  FROM\r\n    time_series\r\n    LEFT JOIN events_data ON DATE_BIN('$time_interval', date_time, '2000-1-1') = time\r\n  WHERE\r\n    p80 > EXTRACT(\r\n      epoch\r\n      FROM\r\n        INTERVAL '$threshold'\r\n    )\r\n)\r\nSELECT\r\n  p80\r\nFROM\r\n  count_result\r\nWHERE\r\n  'p80' IN ($metric);",
+          "refId": "P80",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH time_series AS (\r\n  SELECT\r\n    GENERATE_SERIES(\r\n      $__timeFrom() :: timestamp,\r\n      $__timeTo() :: timestamp,\r\n      '$time_interval' :: interval\r\n    ) AS date_time\r\n),\r\nevents_data AS (\r\n  SELECT\r\n    DATE_BIN('$time_interval', date_time, '2000-1-1') AS time,\r\n    PERCENTILE_CONT(0.90) WITHIN GROUP (\r\n      ORDER BY\r\n        CAST(value AS DECIMAL(10, 3))\r\n    ) AS p90\r\n  FROM\r\n    metrics.events\r\n  WHERE\r\n    event = 'saga_processing_time'\r\n    AND $__timeFilter(date_time)\r\n    AND org IN ($org)\r\n    AND intent IN ($intent)\r\n    AND (\r\n      (\r\n        'Production' IN ('${env:csv}')\r\n        AND (\r\n          is_qa IS NULL\r\n          OR is_qa = FALSE\r\n        )\r\n      )\r\n      OR (\r\n        'Quality Assurance' IN ('${env:csv}')\r\n        AND is_qa = TRUE\r\n      )\r\n    )\r\n  GROUP BY\r\n    time\r\n),\r\ncount_result AS (\r\n  SELECT\r\n    COUNT(*) AS p90\r\n  FROM\r\n    time_series\r\n    LEFT JOIN events_data ON DATE_BIN('$time_interval', date_time, '2000-1-1') = time\r\n  WHERE\r\n    p90 > EXTRACT(\r\n      epoch\r\n      FROM\r\n        INTERVAL '$threshold'\r\n    )\r\n)\r\nSELECT\r\n  p90\r\nFROM\r\n  count_result\r\nWHERE\r\n  'p90' IN ($metric);",
+          "refId": "P90",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH time_series AS (\r\n  SELECT\r\n    GENERATE_SERIES(\r\n      $__timeFrom() :: timestamp,\r\n      $__timeTo() :: timestamp,\r\n      '$time_interval' :: interval\r\n    ) AS date_time\r\n),\r\nevents_data AS (\r\n  SELECT\r\n    DATE_BIN('$time_interval', date_time, '2000-1-1') AS time,\r\n    PERCENTILE_CONT(0.95) WITHIN GROUP (\r\n      ORDER BY\r\n        CAST(value AS DECIMAL(10, 3))\r\n    ) AS p95\r\n  FROM\r\n    metrics.events\r\n  WHERE\r\n    event = 'saga_processing_time'\r\n    AND $__timeFilter(date_time)\r\n    AND org IN ($org)\r\n    AND intent IN ($intent)\r\n    AND (\r\n      (\r\n        'Production' IN ('${env:csv}')\r\n        AND (\r\n          is_qa IS NULL\r\n          OR is_qa = FALSE\r\n        )\r\n      )\r\n      OR (\r\n        'Quality Assurance' IN ('${env:csv}')\r\n        AND is_qa = TRUE\r\n      )\r\n    )\r\n  GROUP BY\r\n    time\r\n),\r\ncount_result AS (\r\n  SELECT\r\n    COUNT(*) AS p95\r\n  FROM\r\n    time_series\r\n    LEFT JOIN events_data ON DATE_BIN('$time_interval', date_time, '2000-1-1') = time\r\n  WHERE\r\n    p95 > EXTRACT(\r\n      epoch\r\n      FROM\r\n        INTERVAL '$threshold'\r\n    )\r\n)\r\nSELECT\r\n  p95\r\nFROM\r\n  count_result\r\nWHERE\r\n  'p95' IN ($metric);",
+          "refId": "P95",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH time_series AS (\r\n  SELECT\r\n    GENERATE_SERIES(\r\n      $__timeFrom() :: timestamp,\r\n      $__timeTo() :: timestamp,\r\n      '$time_interval' :: interval\r\n    ) AS date_time\r\n),\r\nevents_data AS (\r\n  SELECT\r\n    DATE_BIN('$time_interval', date_time, '2000-1-1') AS time,\r\n    PERCENTILE_CONT(0.99) WITHIN GROUP (\r\n      ORDER BY\r\n        CAST(value AS DECIMAL(10, 3))\r\n    ) AS p99\r\n  FROM\r\n    metrics.events\r\n  WHERE\r\n    event = 'saga_processing_time'\r\n    AND $__timeFilter(date_time)\r\n    AND org IN ($org)\r\n    AND intent IN ($intent)\r\n    AND (\r\n      (\r\n        'Production' IN ('${env:csv}')\r\n        AND (\r\n          is_qa IS NULL\r\n          OR is_qa = FALSE\r\n        )\r\n      )\r\n      OR (\r\n        'Quality Assurance' IN ('${env:csv}')\r\n        AND is_qa = TRUE\r\n      )\r\n    )\r\n  GROUP BY\r\n    time\r\n),\r\ncount_result AS (\r\n  SELECT\r\n    COUNT(*) AS p99\r\n  FROM\r\n    time_series\r\n    LEFT JOIN events_data ON DATE_BIN('$time_interval', date_time, '2000-1-1') = time\r\n  WHERE\r\n    p99 > EXTRACT(\r\n      epoch\r\n      FROM\r\n        INTERVAL '$threshold'\r\n    )\r\n)\r\nSELECT\r\n  p99\r\nFROM\r\n  count_result\r\nWHERE\r\n  'p99' IN ($metric);",
+          "refId": "P99",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "b02f26ef-79d6-4a0e-aa7e-218708cee7a2"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH time_series AS (\r\n  SELECT\r\n    GENERATE_SERIES(\r\n      $__timeFrom() :: timestamp,\r\n      $__timeTo() :: timestamp,\r\n      '$time_interval' :: interval\r\n    ) AS date_time\r\n)\r\nSELECT\r\n  COUNT(*) as total\r\nFROM\r\n  time_series;",
+          "refId": "Total",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Count time exceeding threshold",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "stackdriver",
+        "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 19,
+        "x": 0,
+        "y": 53
+      },
+      "id": 21,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "aliasBy": "Errors/s",
+          "datasource": {
+            "type": "stackdriver",
+            "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+          },
+          "queryType": "timeSeriesQuery",
+          "refId": "A",
+          "timeSeriesQuery": {
+            "graphPeriod": "$time_interval",
+            "projectName": "api-prod-goauto-1",
+            "query": "fetch cloud_run_revision\n| metric 'logging.googleapis.com/user/error_count_per_second'\n| align rate(1m)\n| every 1m\n| group_by [],\n    [value_error_count_per_second_aggregate:\n       aggregate(value.error_count_per_second)]"
+          }
+        },
+        {
+          "aliasBy": "Mail processing errors/s",
+          "datasource": {
+            "type": "stackdriver",
+            "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+          },
+          "queryType": "timeSeriesQuery",
+          "refId": "B",
+          "timeSeriesQuery": {
+            "graphPeriod": "$time_interval",
+            "projectName": "api-prod-goauto-1",
+            "query": "fetch prometheus_target\n| metric 'prometheus.googleapis.com/processing_errors_count_total/counter'\n| align rate(1m)\n| every 1m\n| group_by [],\n    [value_processing_errors_count_total_aggregate:\n       aggregate(value.processing_errors_count_total)]"
+          }
+        }
+      ],
+      "title": "Error rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "stackdriver",
+        "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 0.1
+              },
+              {
+                "color": "red",
+                "value": 0.3
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 5,
+        "x": 19,
+        "y": 53
+      },
+      "id": 19,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "stackdriver",
+            "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+          },
+          "queryType": "timeSeriesQuery",
+          "refId": "A",
+          "timeSeriesQuery": {
+            "graphPeriod": "$time_interval",
+            "projectName": "api-prod-goauto-1",
+            "query": "fetch prometheus_target\n| metric 'prometheus.googleapis.com/processing_errors_count_total/counter'\n| align rate(1m)\n| every 1m\n| group_by [],\n    [value_processing_errors_count_total_aggregate:\n       aggregate(value.processing_errors_count_total)]"
+          }
+        }
+      ],
+      "title": "Avg mail processing error rate",
+      "type": "gauge"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 60
+      },
+      "id": 16,
+      "panels": [],
+      "title": "Traffic health",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "c4b495c4-c353-4d08-885e-cf357376c4e4"
+      },
+      "description": "Probe traffic is excluded via `request_path`. The filter lists BOTH the raw probe paths and the normalised bucket names (`probe`/`metadata`/`blocked`/`other`) so it stays correct regardless of whether the mesh-default Istio Telemetry is normalising paths. This panel is the source for the alert '% of succesfull calls (HTTP, gRPC)' \u2014 keep the two expressions in sync.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "#EAB839",
+                "value": 95
+              },
+              {
+                "color": "green",
+                "value": 99
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Failures - 4xx, 5xx, and gRPC Errors"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 16,
+        "x": 0,
+        "y": 61
+      },
+      "id": 15,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "c4b495c4-c353-4d08-885e-cf357376c4e4"
+          },
+          "editorMode": "code",
+          "expr": "(\n  sum by (service_basename) (\n    label_replace(\n      rate(istio_requests_total{\n        reporter=\"destination\",\n        request_path!~\"probe|metadata|blocked|other|/metrics|/|/events|.*/readyz|.*/livez|.*/healthz|.*/openapi.*|.*/docs|.*/clear_cache.*|/wait-for-drain\",\n        response_code!~\"[45].*\",\n        grpc_response_status!~\"[1-9].+\"\n      }[$__rate_interval]),\n      \"service_basename\", \"$1\", \"destination_service\", \"([a-z-]*[a-z]).*\"\n    )\n  ) \n  / \n  sum by (service_basename) (\n    label_replace(\n      rate(istio_requests_total{\n        reporter=\"destination\",\n        request_path!~\"probe|metadata|blocked|other|/metrics|/|/events|.*/readyz|.*/livez|.*/healthz|.*/openapi.*|.*/docs|.*/clear_cache.*|/wait-for-drain\"\n      }[$__rate_interval]),\n      \"service_basename\", \"$1\", \"destination_service\", \"([a-z-]*[a-z]).*\"\n    )\n  )\n) * 100",
+          "instant": false,
+          "legendFormat": "{{destination_service}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "% of succesfull calls (HTTP, gRPC)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "fbde1235-be05-4f72-94a6-06a67f9648dc"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 300
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 8,
+        "x": 16,
+        "y": 61
+      },
+      "id": 14,
+      "options": {
+        "displayMode": "gradient",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "left",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "limit": 5000,
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "fbde1235-be05-4f72-94a6-06a67f9648dc"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  org_id,\n  EXTRACT(EPOCH FROM (NOW() - MIN(created_at))) AS delay_seconds\nFROM\n  bc.mail_envelope me\nWHERE\n  org_id IN ($org)\n  AND org_id NOT LIKE '%\\_shadow%'\n  AND (intent IN ($intent) OR intent = 'unknown')\n  AND created_at >= NOW() - INTERVAL '1 hours'\n  AND NOT EXISTS (\n    SELECT 1\n    FROM bc.events e\n    WHERE e.mail_envelope_id = me.mail_envelope_id\n      AND e.event_type = 'process_completed'\n  )\n  AND status = 'processing'\nGROUP BY \n  org_id\nHAVING \n  NOW() - MIN(created_at) > INTERVAL '0 seconds'\n  -- AND NOW() - MIN(created_at) < INTERVAL '1 day'\nORDER BY \n  delay_seconds DESC;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Customer Perceived Latency",
+      "type": "bargauge"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 73
+      },
+      "id": 18,
+      "panels": [],
+      "title": "Orchestrator",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "stackdriver",
+        "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 19,
+        "x": 0,
+        "y": 74
+      },
+      "id": 22,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "stackdriver",
+            "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+          },
+          "queryType": "timeSeriesQuery",
+          "refId": "A",
+          "timeSeriesQuery": {
+            "graphPeriod": "$time_interval",
+            "projectName": "api-prod-goauto-1",
+            "query": "fetch cloud_run_revision\n| metric 'logging.googleapis.com/log_entry_count'\n| filter (metric.severity > 'INFO|NOTICE')\n| align rate(1m)\n| every 1m\n| group_by [resource.service_name],\n    [value_log_entry_count_aggregate: aggregate(value.log_entry_count)]"
+          }
+        }
+      ],
+      "title": "Cloud run errors",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "stackdriver",
+        "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 5,
+        "x": 19,
+        "y": 74
+      },
+      "id": 24,
+      "options": {
+        "displayMode": "gradient",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "stackdriver",
+            "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+          },
+          "promQLQuery": {
+            "expr": "sum by (service_name) (\n  rate(logging_googleapis_com:log_entry_count{\n    monitored_resource=\"cloud_run_revision\", \n    severity=~\"ERROR|CRITICAL\"\n  }[1m])\n)",
+            "projectName": "api-prod-goauto-1",
+            "step": "10s"
+          },
+          "queryType": "promQL",
+          "refId": "A",
+          "timeSeriesList": {
+            "filters": [],
+            "projectName": "api-prod-goauto-1",
+            "view": "FULL"
+          }
+        }
+      ],
+      "title": "Cloud Run Revision - Log entries/s for ERROR|CRITICAL [SUM]",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "mean"
+            ]
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "fields": {},
+            "sort": [
+              {
+                "desc": true,
+                "field": "Mean"
+              }
+            ]
+          }
+        }
+      ],
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "stackdriver",
+        "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 19,
+        "x": 0,
+        "y": 82
+      },
+      "id": 29,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "aliasBy": "{{resource.label.service_name}}",
+          "datasource": {
+            "type": "stackdriver",
+            "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+          },
+          "queryType": "timeSeriesList",
+          "refId": "A",
+          "timeSeriesList": {
+            "alignmentPeriod": "cloud-monitoring-auto",
+            "crossSeriesReducer": "REDUCE_PERCENTILE_99",
+            "filters": [
+              "metric.type",
+              "=",
+              "run.googleapis.com/request_latencies"
+            ],
+            "groupBys": [
+              "resource.label.service_name"
+            ],
+            "perSeriesAligner": "ALIGN_DELTA",
+            "preprocessor": "none",
+            "projectName": "api-prod-goauto-1"
+          }
+        }
+      ],
+      "title": "Cloud run request latencies per service",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "bflfxr9993vnka"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "green",
+                "value": 250000000000
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 5,
+        "x": 19,
+        "y": 82
+      },
+      "id": 35,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "bflfxr9993vnka"
+          },
+          "editorMode": "code",
+          "expr": "min by (path,host)(min_over_time(disk_free{project='prod-goauto-1',service='postgres-euw4'}[$__interval])) ",
+          "instant": false,
+          "legendFormat": "{{host}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Memory available",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "stackdriver",
+        "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 19,
+        "x": 0,
+        "y": 90
+      },
+      "id": 30,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "aliasBy": "{{resource.label.service_name}}",
+          "datasource": {
+            "type": "stackdriver",
+            "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+          },
+          "queryType": "timeSeriesList",
+          "refId": "A",
+          "timeSeriesList": {
+            "alignmentPeriod": "cloud-monitoring-auto",
+            "crossSeriesReducer": "REDUCE_PERCENTILE_99",
+            "filters": [
+              "metric.type",
+              "=",
+              "run.googleapis.com/container/cpu/utilizations"
+            ],
+            "groupBys": [
+              "resource.label.service_name"
+            ],
+            "perSeriesAligner": "ALIGN_DELTA",
+            "preprocessor": "none",
+            "projectName": "api-prod-goauto-1"
+          }
+        }
+      ],
+      "title": "Cloud run CPU utilization per service",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "bflfxr9993vnka"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "green",
+                "value": 6000000000
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 5,
+        "x": 19,
+        "y": 90
+      },
+      "id": 36,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "bflfxr9993vnka"
+          },
+          "editorMode": "code",
+          "expr": "min by (host)(min_over_time(mem_available{project='prod-goauto-1',service='postgres-euw4'}[$__interval])) ",
+          "instant": false,
+          "legendFormat": "{{host}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Memory available",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "stackdriver",
+        "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 19,
+        "x": 0,
+        "y": 98
+      },
+      "id": 31,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "aliasBy": "{{resource.label.service_name}}",
+          "datasource": {
+            "type": "stackdriver",
+            "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+          },
+          "queryType": "timeSeriesList",
+          "refId": "A",
+          "timeSeriesList": {
+            "alignmentPeriod": "cloud-monitoring-auto",
+            "crossSeriesReducer": "REDUCE_PERCENTILE_99",
+            "filters": [
+              "metric.type",
+              "=",
+              "run.googleapis.com/container/memory/utilizations"
+            ],
+            "groupBys": [
+              "resource.label.service_name"
+            ],
+            "perSeriesAligner": "ALIGN_DELTA",
+            "preprocessor": "none",
+            "projectName": "api-prod-goauto-1"
+          }
+        }
+      ],
+      "title": "Cloud run RAM utilization per service",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "bflfxr9993vnka"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 5,
+        "x": 19,
+        "y": 98
+      },
+      "id": 32,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "bflfxr9993vnka"
+          },
+          "editorMode": "code",
+          "expr": "max by (host)(max_over_time(system_load1{project='prod-goauto-1',service='postgres-euw4'}[$__interval])) ",
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Load average (1 min)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "bflfxr9993vnka"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 19,
+        "x": 0,
+        "y": 106
+      },
+      "id": 33,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "bflfxr9993vnka"
+          },
+          "editorMode": "code",
+          "expr": "avg by (host,datname,role)(avg_over_time(postgresql_pg_stat_activity_oldest_running_query_age{datname!=')',project='prod-goauto-1',service='postgres-euw4'}[$__interval])) ",
+          "instant": false,
+          "legendFormat": "{{ host }}.{{ datname }}.{{ role }}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Older running query age",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "stackdriver",
+        "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 114
+      },
+      "id": 38,
+      "options": {
+        "displayMode": "gradient",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "12.4.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "stackdriver",
+            "uid": "eaf64ea5-fd45-46b4-9983-990eba44667b"
+          },
+          "queryType": "timeSeriesList",
+          "refId": "A",
+          "timeSeriesList": {
+            "alignmentPeriod": "cloud-monitoring-auto",
+            "crossSeriesReducer": "REDUCE_NONE",
+            "filters": [
+              "metric.type",
+              "=",
+              "custom.googleapis.com/cloudamqp/rabbitmq/overview/queue_totals/messages_ready"
+            ],
+            "groupBys": [],
+            "perSeriesAligner": "ALIGN_MEAN",
+            "preprocessor": "none",
+            "projectName": "api-prod-goauto-1",
+            "view": "FULL"
+          }
+        }
+      ],
+      "title": "Message Queue",
+      "type": "bargauge"
+    }
+  ],
+  "preload": false,
+  "refresh": "1m",
+  "schemaVersion": 42,
+  "tags": [
+    "incident",
+    "monitoring"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": [
+            "median",
+            "p90"
+          ],
+          "value": [
+            "median",
+            "p90"
+          ]
+        },
+        "includeAll": true,
+        "label": "Metric",
+        "multi": true,
+        "name": "metric",
+        "options": [],
+        "query": "mean, median, p80, p90, p95, p99",
+        "type": "custom",
+        "valuesFormat": "csv"
+      },
+      {
+        "current": {
+          "text": "1m",
+          "value": "1m"
+        },
+        "includeAll": false,
+        "label": "Time interval",
+        "name": "time_interval",
+        "options": [],
+        "query": "1m, 5m, 10m, 15m, 30m, 1h, 24h",
+        "type": "custom",
+        "valuesFormat": "csv"
+      },
+      {
+        "current": {
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "grafana-postgresql-datasource",
+          "uid": "fbde1235-be05-4f72-94a6-06a67f9648dc"
+        },
+        "definition": "SELECT org_id FROM auth.organization where org_id not like '%_shadow' and org_id not like '%_demo' and org_id not like '%_qa' and org_id not like '%_temp' and org_id not like '%dummy%' and org_id not like '%test%' and org_id != 'gianlucas' and org_id != 'goautonomous' and org_id != 'goa-platform-e2e' and org_id !='ml' and org_id != 'mom' and org_id !='20b88278-21b3-4db2-a95a-1f63073b22cf' and org_id != 'rokstarorganization'",
+        "includeAll": true,
+        "label": "Organization",
+        "multi": true,
+        "name": "org",
+        "options": [],
+        "query": {
+          "editorMode": "code",
+          "format": "table",
+          "query": "SELECT org_id FROM auth.organization where org_id not like '%_shadow' and org_id not like '%_demo' and org_id not like '%_qa' and org_id not like '%_temp' and org_id not like '%dummy%' and org_id not like '%test%' and org_id != 'gianlucas' and org_id != 'goautonomous' and org_id != 'goa-platform-e2e' and org_id !='ml' and org_id != 'mom' and org_id !='20b88278-21b3-4db2-a95a-1f63073b22cf' and org_id != 'rokstarorganization'",
+          "rawQuery": true,
+          "rawSql": "SELECT org_id FROM auth.organization where org_id not like '%_shadow' and org_id not like '%_demo' and org_id not like '%_qa' and org_id not like '%_temp' and org_id not like '%dummy%' and org_id not like '%test%' and org_id != 'gianlucas' and org_id != 'goautonomous' and org_id != 'goa-platform-e2e' and org_id !='ml' and org_id != 'mom' and org_id !='20b88278-21b3-4db2-a95a-1f63073b22cf' and org_id != 'rokstarorganization'",
+          "refId": "SQLVariableQueryEditor-VariableQuery",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        "refresh": 1,
+        "regex": "",
+        "regexApplyTo": "value",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "grafana-postgresql-datasource",
+          "uid": "fbde1235-be05-4f72-94a6-06a67f9648dc"
+        },
+        "definition": "SELECT intent_id FROM bc.intent",
+        "includeAll": true,
+        "label": "Intent",
+        "multi": true,
+        "name": "intent",
+        "options": [],
+        "query": {
+          "editorMode": "code",
+          "format": "table",
+          "query": "SELECT intent_id FROM bc.intent",
+          "rawQuery": true,
+          "rawSql": "SELECT intent_id FROM bc.intent",
+          "refId": "SQLVariableQueryEditor-VariableQuery",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        },
+        "refresh": 1,
+        "regex": "",
+        "regexApplyTo": "value",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "5 min",
+          "value": "5 min"
+        },
+        "includeAll": false,
+        "label": "Threshold",
+        "name": "threshold",
+        "options": [],
+        "query": "0.5 min, 1 min, 2 min, 3 min, 4 min, 5 min, 10 min, 15 min",
+        "type": "custom",
+        "valuesFormat": "csv"
+      },
+      {
+        "current": {
+          "text": "Production",
+          "value": "Production"
+        },
+        "includeAll": true,
+        "label": "Environment",
+        "name": "env",
+        "options": [],
+        "query": "Production, Quality Assurance",
+        "type": "custom",
+        "valuesFormat": "csv"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Incident Monitoring",
+  "uid": "af1f738f-ff26-4575-9d32-85df912d0c67",
+  "weekStart": ""
+}
