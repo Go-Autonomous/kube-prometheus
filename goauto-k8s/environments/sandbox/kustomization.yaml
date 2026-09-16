@@ -8,7 +8,6 @@ resources:
   - grafana-service.yaml
   - grafana-config.yaml
   - default-app-monitor.yaml
-  - kserve-monitor.yaml
   - kserve-monitor-clusterrole.yaml
   - kserve-monitor-clusterrolebinding.yaml
   - grafana-statefulset.yaml
