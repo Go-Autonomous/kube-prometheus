@@ -14,6 +14,9 @@ spec:
   accessLogging:
     - providers:
         - name: envoy
+      # Only log failed requests (4xx/5xx or Envoy-level failures such as resets/timeouts).
+      filter:
+        expression: "response.code >= 400 || response.flags != 0"
   metrics:
     - providers:
         - name: prometheus
