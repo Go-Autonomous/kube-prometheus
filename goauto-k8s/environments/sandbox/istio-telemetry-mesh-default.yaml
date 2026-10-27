@@ -14,9 +14,14 @@ spec:
   accessLogging:
     - providers:
         - name: envoy
-      # Only log failed requests (4xx/5xx or Envoy-level failures such as resets/timeouts).
+      # Only log failed requests (4xx/5xx or Envoy-level failures such as resets/timeouts),
+      # excluding Knative activator readiness probes: they 503 by design while a pod starts
+      # and Kubernetes already tracks readiness. The presence test matters: a missing
+      # attribute makes the CEL expression error, and Envoy then drops the log line.
       filter:
-        expression: "response.code >= 400 || response.flags != 0"
+        expression: >-
+          (response.code >= 400 || response.flags != 0) &&
+          ('user-agent' in request.headers ? request.headers['user-agent'] != 'Knative-Activator-Probe' : true)
   metrics:
     - providers:
         - name: prometheus
