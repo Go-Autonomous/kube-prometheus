@@ -58,8 +58,10 @@ spec:
             - --retention.resolution-raw=14d
             # Keep 5-minute downsampled data for 30 days
             - --retention.resolution-5m=30d
-            # Keep 1-hour downsampled data for 90 days
-            - --retention.resolution-1h=90d
+            # 1h tier is unused (needs 10d+ blocks); match the 30d horizon
+            - --retention.resolution-1h=30d
+            # Cap blocks at 2d: 14d raw blocks (~1TB) overflow the disk and outlive raw retention
+            - --debug.max-compaction-level=3
             - --delete-delay=1h
             - --consistency-delay=30m
             - --deduplication.replica-label=prometheus_replica
