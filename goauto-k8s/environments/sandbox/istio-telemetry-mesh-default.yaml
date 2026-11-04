@@ -45,6 +45,11 @@ spec:
             intent:
               operation: UPSERT
               value: "request.headers['X-Intent'] != '' ? request.headers['X-Intent'] : 'unknown'"
+        # request_path is server-side only: client side (incl. ingress gateway) was ~97% of Istio series
+        - match:
+            metric: REQUEST_COUNT
+            mode: SERVER
+          tagOverrides:
             request_path: &normalised_path
               operation: UPSERT
               # Bounded path label.
@@ -83,9 +88,11 @@ spec:
                   ? 'probe'
                   : request.url_path.startsWith('/computeMetadata/')
                     ? 'metadata'
-                    : (response.code >= 200 && response.code < 300)
-                      ? request.url_path
-                      : (response.code >= 400 ? 'blocked' : 'other')
+                    : request.url_path.startsWith('/api/public/media/')
+                      ? '/api/public/media/{id}'
+                      : (response.code >= 200 && response.code < 300)
+                        ? request.url_path
+                        : (response.code >= 400 ? 'blocked' : 'other')
 
         # ------------------------------------------------------------------
         # REQUEST_DURATION -> istio_request_duration_milliseconds
@@ -100,13 +107,11 @@ spec:
         # effectively reporting health-check latency rather than user-facing
         # request latency.
         #
-        # Measured impact of adding the normalised label:
-        #   raw url_path : 31.7k -> ~169k series  (+10% of head, +430% of metric)
-        #   normalised   : 31.7k -> ~35k  series  (+0.2% of head)
+        # Server side only, like REQUEST_COUNT above.
         # ------------------------------------------------------------------
         - match:
             metric: REQUEST_DURATION
-            mode: CLIENT_AND_SERVER
+            mode: SERVER
           tagOverrides:
             request_path: *normalised_path
   tracing:
