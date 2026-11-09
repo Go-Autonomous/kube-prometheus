@@ -21,6 +21,24 @@ spec:
   image: quay.io/prometheus/prometheus:v3.4.0
   nodeSelector:
     kubernetes.io/os: linux
+    workload: prometheus
+  # Dedicated e2-highmem-8 pool (prometheus-e2-highmem-8), two pods per node
+  tolerations:
+  - key: dedicated
+    operator: Equal
+    value: prometheus
+    effect: NoSchedule
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: prometheus
+            app.kubernetes.io/instance: k8s
+        # Spread only replicas of the same shard, so each node holds one pod per shard
+        matchLabelKeys:
+        - operator.prometheus.io/shard
+        topologyKey: kubernetes.io/hostname
   podMetadata:
     labels:
       app.kubernetes.io/component: prometheus
@@ -36,7 +54,7 @@ spec:
   shards: 2 # Test mart
   resources:
     requests:
-      memory: 14000Mi
+      memory: 24Gi # ~15Gi peak after Istio request_path fix; 2 x 24Gi fits a 57Gi node
       cpu: 1
   retention: 1w
   ruleNamespaceSelector: {}
