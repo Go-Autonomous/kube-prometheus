@@ -12,6 +12,7 @@ resources:
   - kserve-monitor-clusterrolebinding.yaml
   - grafana-statefulset.yaml
   - prometheus-prometheus.yaml
+  - prometheus-podDisruptionBudget.yaml
   - prometheus-serviceAccount.yaml
   - knative-queue-proxy-monitor.yaml
   - milvus-prometheusrule.yaml
