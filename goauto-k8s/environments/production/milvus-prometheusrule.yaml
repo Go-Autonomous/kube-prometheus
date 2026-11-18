@@ -130,3 +130,95 @@ spec:
         summary: Milvus slow queries detected
         description: "{{ $value | humanize }} slow queries in last 5m"
 
+  - name: milvus-etcd
+    rules:
+    # Prometheus is sharded, so count members via kube-state-metrics, not per-shard scrape targets.
+    - alert: MilvusEtcdMemberDown
+      expr: kube_statefulset_status_replicas_ready{namespace="milvus",statefulset="milvus-cluster-etcd"} < 3
+      for: 5m
+      labels:
+        severity: warning
+        alertgroup: milvus
+      annotations:
+        summary: Milvus etcd member down
+        description: "Only {{ $value }} of 3 etcd members are ready for 5m; the cluster tolerates one member down."
+
+    - alert: MilvusEtcdQuorumLost
+      expr: kube_statefulset_status_replicas_ready{namespace="milvus",statefulset="milvus-cluster-etcd"} < 2
+      for: 1m
+      labels:
+        severity: critical
+        alertgroup: milvus
+      annotations:
+        summary: Milvus etcd quorum lost
+        description: "Only {{ $value }} of 3 etcd members are ready; Milvus metadata reads and writes will fail."
+
+    - alert: MilvusEtcdScrapeDown
+      expr: up{job="milvus/milvus-cluster-etcd"} == 0
+      for: 10m
+      labels:
+        severity: warning
+        alertgroup: milvus
+      annotations:
+        summary: Milvus etcd metrics not scrapeable
+        description: "Prometheus can't scrape etcd member {{ $labels.pod }}; etcd alerts for it are blind."
+
+    - alert: MilvusEtcdNoLeader
+      expr: etcd_server_has_leader{job="milvus/milvus-cluster-etcd"} == 0
+      for: 1m
+      labels:
+        severity: critical
+        alertgroup: milvus
+      annotations:
+        summary: Milvus etcd member has no leader
+        description: "etcd member {{ $labels.pod }} has had no leader for 1m."
+
+    - alert: MilvusEtcdFrequentLeaderChanges
+      expr: max(increase(etcd_server_leader_changes_seen_total{job="milvus/milvus-cluster-etcd"}[1h])) > 4
+      labels:
+        severity: warning
+        alertgroup: milvus
+      annotations:
+        summary: Milvus etcd leader changing frequently
+        description: "{{ $value | humanize }} leader changes in the last hour; check etcd disk latency and node stability."
+
+    - alert: MilvusEtcdWALFsyncSlow
+      expr: histogram_quantile(0.99, sum by (pod, le) (rate(etcd_disk_wal_fsync_duration_seconds_bucket{job="milvus/milvus-cluster-etcd"}[5m]))) > 0.5
+      for: 10m
+      labels:
+        severity: warning
+        alertgroup: milvus
+      annotations:
+        summary: Milvus etcd WAL fsync slow
+        description: "etcd {{ $labels.pod }} WAL fsync p99 is {{ $value | humanizeDuration }} (threshold 500ms)."
+
+    - alert: MilvusEtcdBackendCommitSlow
+      expr: histogram_quantile(0.99, sum by (pod, le) (rate(etcd_disk_backend_commit_duration_seconds_bucket{job="milvus/milvus-cluster-etcd"}[5m]))) > 0.25
+      for: 10m
+      labels:
+        severity: warning
+        alertgroup: milvus
+      annotations:
+        summary: Milvus etcd backend commit slow
+        description: "etcd {{ $labels.pod }} backend commit p99 is {{ $value | humanizeDuration }} (threshold 250ms)."
+
+    - alert: MilvusEtcdProposalsFailing
+      expr: max(increase(etcd_server_proposals_failed_total{job="milvus/milvus-cluster-etcd"}[1h])) > 5
+      for: 5m
+      labels:
+        severity: warning
+        alertgroup: milvus
+      annotations:
+        summary: Milvus etcd proposals failing
+        description: "{{ $value | humanize }} failed etcd proposals in the last hour."
+
+    - alert: MilvusEtcdDatabaseNearQuota
+      expr: max by (pod) (etcd_mvcc_db_total_size_in_bytes{job="milvus/milvus-cluster-etcd"} / etcd_server_quota_backend_bytes{job="milvus/milvus-cluster-etcd"}) > 0.8
+      for: 10m
+      labels:
+        severity: warning
+        alertgroup: milvus
+      annotations:
+        summary: Milvus etcd database near quota
+        description: "etcd {{ $labels.pod }} database is at {{ $value | humanizePercentage }} of its quota; etcd goes read-only when full."
+
